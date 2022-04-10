@@ -9,7 +9,7 @@
   user-select: none;
 }
 
-.main {
+#App {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -29,13 +29,43 @@
 
 .box h1 {
   color: white;
+  padding-bottom: 50px;
 }
 
 .box span {
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
   color: white;
 }
 
-.start {
+.btn {
+  position: relative;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  text-align: center;
+}
+
+.btn:hover::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-left: 3px solid white;
+  border-bottom: 3px solid white;
+  position: absolute;
+  right: -10px;
+  transform: rotateZ(45deg);
+}
+
+.btn:hover::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-right: 3px solid white;
+  border-bottom: 3px solid white;
+  position: absolute;
+  left: -10px;
+  transform: rotateZ(-45deg);
 }
