@@ -1,3 +1,3 @@
-const mainHandler = new MainHandler();
+import App from "./App.js";
 
-mainHandler.mainScreen();
+new App({ $target: document.getElementById("App") });
