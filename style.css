@@ -18,8 +18,8 @@
 }
 
 .box {
-  width: 400px;
-  height: 400px;
+  width: 600px;
+  height: 600px;
   background-color: black;
   display: flex;
   flex-direction: column;

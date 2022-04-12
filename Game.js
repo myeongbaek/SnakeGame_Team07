@@ -8,12 +8,13 @@ export default class Game {
   intervalId;
 
   state = {
+    isKeyPressed: false,
     playerPos: {
-      x: 10,
-      y: 10,
+      x: 15,
+      y: 15,
     },
-    gridSize: 20,
-    tileCount: 20,
+    gridSize: 15,
+    tileCount: 40,
     trail: [],
     tail: 5,
     velocity: {
@@ -35,9 +36,8 @@ export default class Game {
   }
 
   setUp() {
-    console.log("setup");
     this.$target.innerHTML = `
-        <canvas id="canvas" width="400" height="400"></canvas>
+        <canvas id="canvas" width="600" height="600"></canvas>
     `;
     this.$canvas = document.getElementById("canvas");
     this.$canvasContext = this.$canvas.getContext("2d");
@@ -45,26 +45,31 @@ export default class Game {
   }
 
   keyPress(event) {
+    if (this.state.isKeyPressed) return;
     switch (event.key) {
       case "ArrowUp":
         this.state.velocity.y !== 1
           ? this.setState({ velocity: { x: 0, y: -1 } })
           : null;
+        this.state.isKeyPressed = true;
         break;
       case "ArrowDown":
         this.state.velocity.y !== -1
           ? this.setState({ velocity: { x: 0, y: 1 } })
           : null;
+        this.state.isKeyPressed = true;
         break;
       case "ArrowLeft":
         this.state.velocity.x !== 1
           ? this.setState({ velocity: { x: -1, y: 0 } })
           : null;
+        this.state.isKeyPressed = true;
         break;
       case "ArrowRight":
         this.state.velocity.x !== -1
           ? this.setState({ velocity: { x: 1, y: 0 } })
           : null;
+        this.state.isKeyPressed = true;
         break;
     }
   }
@@ -112,6 +117,7 @@ export default class Game {
 
   render() {
     this.move();
+    this.state.isKeyPressed = false;
 
     if (this.isGameOver()) {
       clearInterval(this.intervalId);
@@ -132,8 +138,8 @@ export default class Game {
       this.$canvasContext.fillRect(
         body.x * this.state.gridSize,
         body.y * this.state.gridSize,
-        this.state.tileCount - 2,
-        this.state.tileCount - 2
+        this.state.gridSize - 2,
+        this.state.gridSize - 2
       );
     });
 
@@ -149,8 +155,8 @@ export default class Game {
     this.$canvasContext.fillRect(
       this.state.fruitPos.x * this.state.gridSize,
       this.state.fruitPos.y * this.state.gridSize,
-      this.state.tileCount - 2,
-      this.state.tileCount - 2
+      this.state.gridSize - 2,
+      this.state.gridSize - 2
     );
   }
 
