@@ -6,12 +6,13 @@ export default class Game {
   $canvasContext;
 
   intervalId;
+  isPaused = false;
+  isKeyPressed = false;
 
   state = {
-    isKeyPressed: false,
     playerPos: {
-      x: 15,
-      y: 15,
+      x: 20,
+      y: 20,
     },
     gridSize: 15,
     tileCount: 40,
@@ -45,33 +46,80 @@ export default class Game {
   }
 
   keyPress(event) {
-    if (this.state.isKeyPressed) return;
+    if (this.isKeyPressed || this.isPaused) return;
     switch (event.key) {
       case "ArrowUp":
         this.state.velocity.y !== 1
           ? this.setState({ velocity: { x: 0, y: -1 } })
           : null;
-        this.state.isKeyPressed = true;
+        this.isKeyPressed = true;
         break;
       case "ArrowDown":
         this.state.velocity.y !== -1
           ? this.setState({ velocity: { x: 0, y: 1 } })
           : null;
-        this.state.isKeyPressed = true;
+        this.isKeyPressed = true;
         break;
       case "ArrowLeft":
         this.state.velocity.x !== 1
           ? this.setState({ velocity: { x: -1, y: 0 } })
           : null;
-        this.state.isKeyPressed = true;
+        this.isKeyPressed = true;
         break;
       case "ArrowRight":
         this.state.velocity.x !== -1
           ? this.setState({ velocity: { x: 1, y: 0 } })
           : null;
-        this.state.isKeyPressed = true;
+        this.isKeyPressed = true;
+        break;
+      case "Escape":
+        clearInterval(this.intervalId);
+        this.pause();
         break;
     }
+  }
+
+  pause() {
+    this.isPaused = true;
+
+    const overlay = document.createElement("div");
+    overlay.classList = "overlay";
+
+    const modal = document.createElement("div");
+    modal.classList = "modal";
+
+    modal.innerHTML = `
+        <h1>Pause</h1>
+        <span class="btn resume">Resume</span>
+        <span class="btn restart">Restart</span>
+        <span class="btn">Save</span>
+        <span class="btn">Exit</span>
+      `;
+
+    overlay.appendChild(modal);
+    this.$target.appendChild(overlay);
+
+    const resume = this.$target.querySelector(".resume");
+    resume.addEventListener("click", () => {
+      this.isPaused = false;
+      this.$target.removeChild(overlay);
+      this.gameLoop();
+    });
+
+    const restart = this.$target.querySelector(".restart");
+    restart.addEventListener("click", () => {
+      this.isPaused = false;
+      this.$target.removeChild(overlay);
+      this.setState({
+        ...this.state,
+        playerPos: { x: 20, y: 20 },
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+        velocity: { x: 0, y: -1 },
+        trail: [],
+        tail: 5,
+      });
+      this.gameLoop();
+    });
   }
 
   move() {
@@ -110,14 +158,13 @@ export default class Game {
 
   updateFruit() {
     this.setState({
-      //...this.state,
       fruitPos: GenerateFruitPosition(this.state.trail, this.state.tileCount),
     });
   }
 
   render() {
     this.move();
-    this.state.isKeyPressed = false;
+    this.isKeyPressed = false;
 
     if (this.isGameOver()) {
       clearInterval(this.intervalId);
