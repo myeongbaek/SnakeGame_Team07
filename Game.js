@@ -8,6 +8,7 @@ export default class Game {
   intervalId;
   isPaused = false;
   isKeyPressed = false;
+  renderMain;
 
   state = {
     playerPos: {
@@ -25,8 +26,9 @@ export default class Game {
     fruitPos: { x: 5, y: 5 },
   };
 
-  constructor({ $target }) {
+  constructor({ $target, renderMain }) {
     this.$target = $target;
+    this.renderMain = renderMain;
   }
 
   setState(nextState) {
@@ -92,7 +94,7 @@ export default class Game {
         <h1>Pause</h1>
         <span class="btn resume">Resume</span>
         <span class="btn restart">Restart</span>
-        <span class="btn">Save</span>
+        <span class="btn save">Save</span>
         <span class="btn">Exit</span>
       `;
 
@@ -120,6 +122,15 @@ export default class Game {
       });
       this.gameLoop();
     });
+
+    /*
+      need to implement saving feature with localStorage
+      according to the assignment guide, we should save data then go back to main screen
+    */
+
+    /*
+      Exit should bring the player back to main screen
+    */
   }
 
   move() {
@@ -167,7 +178,30 @@ export default class Game {
     this.isKeyPressed = false;
 
     if (this.isGameOver()) {
+      /*
+        when the game is over,
+        instead of just going back to main screen,
+        we should display a modal screen and
+        show how much score did the player get,
+        then save the data to localStorage for 'ranking' in the main screen
+      */
+      this.setState({
+        playerPos: {
+          x: 20,
+          y: 20,
+        },
+        gridSize: 15,
+        tileCount: 40,
+        trail: [],
+        tail: 5,
+        velocity: {
+          x: 0,
+          y: -1,
+        },
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+      });
       clearInterval(this.intervalId);
+      return this.renderMain();
     }
 
     this.$canvasContext.fillStyle = "black";
