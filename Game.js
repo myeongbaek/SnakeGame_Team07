@@ -9,7 +9,6 @@ export default class Game {
   isPaused = false;
   isKeyPressed = false;
   renderMain;
-  //var brush=js.brush;
 
   state = {
 
@@ -40,16 +39,6 @@ export default class Game {
       ...nextState,
     };
   }
-
-
-
-
-
-
-
-
-
-
   setUp() {
     this.$target.innerHTML = `
         <canvas id="canvas" width="600" height="600"></canvas>
@@ -135,7 +124,6 @@ export default class Game {
         trail: [],
         tail: 5,
       });
-      localStorage.setItem("score",this.state.score)
       this.gameLoop();
     });
 
@@ -147,6 +135,31 @@ export default class Game {
     /*
       Exit should bring the player back to main screen
     */
+    const save = this.$target.querySelector(".save");
+    save.addEventListener("click", () => {
+      this.isPaused = false;
+      this.$target.removeChild(overlay);
+      clearInterval(this.intervalId);
+      localStorage.setItem("state",JSON.stringify(this.state));
+      this.setState({
+        ...this.state,
+        score :0,
+        playerPos: {x: 20, y: 20},
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+        velocity: {x: 0, y: -1},
+        trail: [],
+        tail: 5,
+      });
+
+      clearInterval(this.intervalId);
+       this.renderMain();
+    });
+
+
+
+
+
+
     const exit = this.$target.querySelector(".exit");
     exit.addEventListener("click", () => {
       this.isPaused = false;
@@ -170,6 +183,7 @@ export default class Game {
        this.renderMain();
     });
 
+
   }
 
   move() {
@@ -184,16 +198,17 @@ export default class Game {
 
   isGameOver() {
     // out of bound check
+
     if (
-      this.state.playerPos.x < 0 ||
-      this.state.playerPos.x > this.state.tileCount - 1 ||
+     this.state.playerPos.x < 0||
+      this.state.playerPos.x > this.state.tileCount -1||
       this.state.playerPos.y < 0 ||
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
       return true;
     }
 
-    // self-eating check
+
     for (var i = 0; i < this.state.trail.length - 1; i++) {
       if (
         this.state.playerPos.x === this.state.trail[i].x &&
@@ -248,12 +263,6 @@ export default class Game {
       return this.renderMain();
     }
 
-
-
-
-
-
-
     this.$canvasContext.fillStyle = "black";
     this.$canvasContext.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
 
@@ -263,9 +272,6 @@ export default class Game {
     });
 
     while (this.state.trail.length > this.state.tail) this.state.trail.shift();
-
-
-
 
     this.$canvasContext.fillStyle = "lime";
     this.state.trail.forEach((body) => {
@@ -290,8 +296,6 @@ export default class Game {
     this.$canvasContext.font = '15pt Calibri';
     this.$canvasContext.lineWidth = 3;
     this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText("Score:"+localStorage.getItem("score"), 10, 580);
-
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
       this.state.fruitPos.x * this.state.gridSize,

@@ -26,6 +26,9 @@ export default class MainScreen {
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
     const onStartClick = () => {
+      this.game.state.playerPos.x=35;
+      this.game.state.playerPos.y=35;
+
       this.game.setUp();
       this.game.gameLoop();
     };
@@ -41,13 +44,23 @@ export default class MainScreen {
 
       line 41 registers the game-start function to the start button
     */
-
     const onLoadClick = () => {
+
+      this.game.state=JSON.parse(localStorage.getItem("state"));
+
+      this.game.setUp();
+      this.game.gameLoop();
+
+
       /*
         load the saved data, then start the game
         google about "localStorage" in JavaScript
       */
     };
+    const loadBtn = this.$screen.querySelector(".load");
+    loadBtn.addEventListener("click", onLoadClick);
+
+
 
     /*
       grab the load button, then register the function
