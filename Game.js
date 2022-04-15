@@ -9,12 +9,15 @@ export default class Game {
   isPaused = false;
   isKeyPressed = false;
   renderMain;
+  //var brush=js.brush;
 
   state = {
+
     playerPos: {
       x: 20,
       y: 20,
     },
+    score :0,
     gridSize: 15,
     tileCount: 40,
     trail: [],
@@ -37,6 +40,15 @@ export default class Game {
       ...nextState,
     };
   }
+
+
+
+
+
+
+
+
+
 
   setUp() {
     this.$target.innerHTML = `
@@ -110,16 +122,20 @@ export default class Game {
 
     const restart = this.$target.querySelector(".restart");
     restart.addEventListener("click", () => {
+    //  this.state.score=0;
+      localStorage.setItem("score",this.state.score)
       this.isPaused = false;
       this.$target.removeChild(overlay);
       this.setState({
         ...this.state,
+        score :0,
         playerPos: {x: 20, y: 20},
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
         velocity: {x: 0, y: -1},
         trail: [],
         tail: 5,
       });
+      localStorage.setItem("score",this.state.score)
       this.gameLoop();
     });
 
@@ -139,6 +155,7 @@ export default class Game {
           x: 20,
           y: 20,
         },
+        score :0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -199,6 +216,7 @@ export default class Game {
     this.move();
     this.isKeyPressed = false;
 
+
     if (this.isGameOver()) {
       /*
         when the game is over,
@@ -207,11 +225,15 @@ export default class Game {
         show how much score did the player get,
         then save the data to localStorage for 'ranking' in the main screen
       */
+      this.state.score=0;
+      localStorage.setItem("score",this.state.score)
+
       this.setState({
         playerPos: {
           x: 20,
           y: 20,
         },
+        score :0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -226,6 +248,12 @@ export default class Game {
       return this.renderMain();
     }
 
+
+
+
+
+
+
     this.$canvasContext.fillStyle = "black";
     this.$canvasContext.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
 
@@ -235,6 +263,9 @@ export default class Game {
     });
 
     while (this.state.trail.length > this.state.tail) this.state.trail.shift();
+
+
+
 
     this.$canvasContext.fillStyle = "lime";
     this.state.trail.forEach((body) => {
@@ -252,7 +283,14 @@ export default class Game {
     ) {
       this.updateFruit();
       this.state.tail++;
+      this.state.score++;
+      localStorage.setItem("score",this.state.score)
+
     }
+    this.$canvasContext.font = '15pt Calibri';
+    this.$canvasContext.lineWidth = 3;
+    this.$canvasContext.fillStyle = "grey";
+    this.$canvasContext.fillText("Score:"+localStorage.getItem("score"), 10, 580);
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
