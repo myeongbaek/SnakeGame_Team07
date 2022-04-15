@@ -95,7 +95,7 @@ export default class Game {
         <span class="btn resume">Resume</span>
         <span class="btn restart">Restart</span>
         <span class="btn save">Save</span>
-        <span class="btn">Exit</span>
+        <span class="btn exit">Exit</span>
       `;
 
     overlay.appendChild(modal);
@@ -114,9 +114,9 @@ export default class Game {
       this.$target.removeChild(overlay);
       this.setState({
         ...this.state,
-        playerPos: { x: 20, y: 20 },
+        playerPos: {x: 20, y: 20},
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        velocity: { x: 0, y: -1 },
+        velocity: {x: 0, y: -1},
         trail: [],
         tail: 5,
       });
@@ -131,6 +131,28 @@ export default class Game {
     /*
       Exit should bring the player back to main screen
     */
+    const exit = this.$target.querySelector(".exit");
+    exit.addEventListener("click", () => {
+      this.isPaused = false;
+      this.setState({
+        playerPos: {
+          x: 20,
+          y: 20,
+        },
+        gridSize: 15,
+        tileCount: 40,
+        trail: [],
+        tail: 5,
+        velocity: {
+          x: 0,
+          y: -1,
+        },
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+      });
+      clearInterval(this.intervalId);
+       this.renderMain();
+    });
+
   }
 
   move() {
