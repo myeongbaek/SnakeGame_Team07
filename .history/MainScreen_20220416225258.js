@@ -44,7 +44,7 @@ export default class MainScreen {
     */
     const onLoadClick = () => {
       if (localStorage.getItem("state") === null) {
-        console.log("no saving state data in local storage");
+
       }
       else {
         this.game.state = JSON.parse(localStorage.getItem("state"));

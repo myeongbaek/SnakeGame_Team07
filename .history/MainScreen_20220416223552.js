@@ -43,10 +43,7 @@ export default class MainScreen {
       line 41 registers the game-start function to the start button
     */
     const onLoadClick = () => {
-      if (localStorage.getItem("state") === null) {
-        console.log("no saving state data in local storage");
-      }
-      else {
+      if (Jason.parse(localStorage.getItem("state") !== null)) {
         this.game.state = JSON.parse(localStorage.getItem("state"));
 
         this.game.setUp();
