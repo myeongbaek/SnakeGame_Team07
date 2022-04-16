@@ -26,8 +26,6 @@ export default class MainScreen {
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
     const onStartClick = () => {
-      this.game.state.playerPos.x=35;
-      this.game.state.playerPos.y=35;
 
       this.game.setUp();
       this.game.gameLoop();
