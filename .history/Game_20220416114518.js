@@ -1,4 +1,4 @@
-import { CompareRank, GenerateFruitPosition } from "./utils.js";
+import { GenerateFruitPosition } from "./utils.js";
 
 export default class Game {
   $target;
@@ -263,18 +263,9 @@ export default class Game {
       const isBntOnClick = (event) => {
         event.preventDefault();
         const rankData = { username: username.value, score: this.state.score };
-        console.log(this);
-        let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? savedData = [] : savedData;
 
-        savedData.push(rankData);
-        savedData.sort(CompareRank);
-        console.log(savedData);
-
-
-        localStorage.setItem("rankData", JSON.stringify(savedData));
-        //console.log(JSON.parse(localStorage.getItem("rankData")).score);
-
+        localStorage.setItem("rankData", JSON.stringify(rankData));
+        console.log(localStorage.getItem("rankData"));
       }
       const username = document.getElementById("UserName")
       const userform = document.querySelector("form");

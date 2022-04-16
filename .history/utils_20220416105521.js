@@ -12,8 +12,3 @@ export function GenerateFruitPosition(trail, tileCount) {
   }
   return { x, y };
 }
-
-
-export function CompareRank(r1, r2) {
-  return r1.score - r2.score;
-}

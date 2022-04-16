@@ -1,4 +1,4 @@
-import { CompareRank, GenerateFruitPosition } from "./utils.js";
+import { GenerateFruitPosition } from "./utils.js";
 
 export default class Game {
   $target;
@@ -260,27 +260,13 @@ export default class Game {
       overlay.appendChild(modal);
       this.$target.appendChild(overlay);
 
-      const isBntOnClick = (event) => {
-        event.preventDefault();
-        const rankData = { username: username.value, score: this.state.score };
-        console.log(this);
-        let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? savedData = [] : savedData;
-
-        savedData.push(rankData);
-        savedData.sort(CompareRank);
-        console.log(savedData);
-
-
-        localStorage.setItem("rankData", JSON.stringify(savedData));
-        //console.log(JSON.parse(localStorage.getItem("rankData")).score);
-
-      }
       const username = document.getElementById("UserName")
       const userform = document.querySelector("form");
       userform.addEventListener("submit", isBntOnClick);
 
+      const isBntOnClick = () => {
 
+      }
       //username.value;
 
       this.setState({
@@ -330,9 +316,9 @@ export default class Game {
       this.updateFruit();
       this.state.tail++;
       this.state.score++;
+      localStorage.setItem("score", this.state.score)
 
     }
-    localStorage.setItem("score", this.state.score)
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(

@@ -1,4 +1,4 @@
-import { CompareRank, GenerateFruitPosition } from "./utils.js";
+import { GenerateFruitPosition } from "./utils.js";
 
 export default class Game {
   $target;
@@ -16,7 +16,7 @@ export default class Game {
       x: 20,
       y: 20,
     },
-    score: 0,
+    score :0,
     gridSize: 15,
     tileCount: 40,
     trail: [],
@@ -115,10 +115,10 @@ export default class Game {
       this.$target.removeChild(overlay);
       this.setState({
         ...this.state,
-        score: 0,
-        playerPos: { x: 20, y: 20 },
+        score :0,
+        playerPos: {x: 20, y: 20},
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        velocity: { x: 0, y: -1 },
+        velocity: {x: 0, y: -1},
         trail: [],
         tail: 5,
       });
@@ -138,19 +138,19 @@ export default class Game {
       this.isPaused = false;
       this.$target.removeChild(overlay);
       clearInterval(this.intervalId);
-      localStorage.setItem("state", JSON.stringify(this.state));
+      localStorage.setItem("state",JSON.stringify(this.state));
       this.setState({
         ...this.state,
-        score: 0,
-        playerPos: { x: 20, y: 20 },
+        score :0,
+        playerPos: {x: 20, y: 20},
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        velocity: { x: 0, y: -1 },
+        velocity: {x: 0, y: -1},
         trail: [],
         tail: 5,
       });
 
       clearInterval(this.intervalId);
-      this.renderMain();
+       this.renderMain();
     });
 
 
@@ -166,7 +166,7 @@ export default class Game {
           x: 20,
           y: 20,
         },
-        score: 0,
+        score :0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -178,7 +178,7 @@ export default class Game {
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
       });
       clearInterval(this.intervalId);
-      this.renderMain();
+       this.renderMain();
     });
 
 
@@ -198,8 +198,8 @@ export default class Game {
     // out of bound check
 
     if (
-      this.state.playerPos.x < 0 ||
-      this.state.playerPos.x > this.state.tileCount - 1 ||
+     this.state.playerPos.x < 0||
+      this.state.playerPos.x > this.state.tileCount -1||
       this.state.playerPos.y < 0 ||
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
@@ -239,56 +239,13 @@ export default class Game {
         then save the data to localStorage for 'ranking' in the main screen
       */
 
-      const overlay = document.createElement("div");
-      overlay.classList = "overlay";
-
-      const modal = document.createElement("div");
-      modal.classList = "modal";
-
-      modal.innerHTML = `
-            <h1>You died</h1>
-            <span class="score">Score : ${this.state.score}</span>
-            <form>
-            <input type="text" id="UserName" placeholder="username"></input>
-            <button>-></button>
-            </form>
-            
-            <span class="btn restart">Restart</span>
-            <span class="btn exit">Exit</span>
-          `;
-
-      overlay.appendChild(modal);
-      this.$target.appendChild(overlay);
-
-      const isBntOnClick = (event) => {
-        event.preventDefault();
-        const rankData = { username: username.value, score: this.state.score };
-        console.log(this);
-        let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? savedData = [] : savedData;
-
-        savedData.push(rankData);
-        savedData.sort(CompareRank);
-        console.log(savedData);
-
-
-        localStorage.setItem("rankData", JSON.stringify(savedData));
-        //console.log(JSON.parse(localStorage.getItem("rankData")).score);
-
-      }
-      const username = document.getElementById("UserName")
-      const userform = document.querySelector("form");
-      userform.addEventListener("submit", isBntOnClick);
-
-
-      //username.value;
 
       this.setState({
         playerPos: {
           x: 20,
           y: 20,
         },
-        score: 0,
+        score :0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -300,7 +257,7 @@ export default class Game {
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
       });
       clearInterval(this.intervalId);
-      //return this.renderMain();
+      return this.renderMain();
     }
 
     this.$canvasContext.fillStyle = "black";
@@ -330,9 +287,9 @@ export default class Game {
       this.updateFruit();
       this.state.tail++;
       this.state.score++;
+      localStorage.setItem("score",this.state.score)
 
     }
-    localStorage.setItem("score", this.state.score)
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(

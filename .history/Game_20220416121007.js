@@ -263,11 +263,11 @@ export default class Game {
       const isBntOnClick = (event) => {
         event.preventDefault();
         const rankData = { username: username.value, score: this.state.score };
-        console.log(this);
+
         let savedData = JSON.parse(localStorage.getItem("rankData"));
         savedData === null ? savedData = [] : savedData;
-
         savedData.push(rankData);
+
         savedData.sort(CompareRank);
         console.log(savedData);
 
