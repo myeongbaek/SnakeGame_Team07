@@ -15,6 +15,7 @@ export default class MainScreen {
   }
 
   render = () => {
+    console.log(this);
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
         <span class="start btn">Start</span>
@@ -24,26 +25,33 @@ export default class MainScreen {
     `;
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
-
-    //Start
     const onStartClick = () => {
+
       this.game.setUp();
       this.game.gameLoop();
     };
     const startBtn = this.$screen.querySelector(".start");
     startBtn.addEventListener("click", onStartClick);
 
-    //Load
+    /*
+      here we need to make the rest of the buttons in main screen work
+
+      line 36 to 39 is function to start the game
+
+      line 40 grabs the start button from the page and let you work with it
+
+      line 41 registers the game-start function to the start button
+    */
     const onLoadClick = () => {
-      if (localStorage.getItem("state") === null) {
-        console.log("no saving state data in local storage");
-      } else {
+      if (Jason.parse(localStorage.getItem("state") === null)) {
+        console.log(Jason.parse(localStorage.getItem("state")));
+      }
+      else {
         this.game.state = JSON.parse(localStorage.getItem("state"));
 
         this.game.setUp();
         this.game.gameLoop();
       }
-
       /*
         load the saved data, then start the game
         google about "localStorage" in JavaScript
@@ -52,7 +60,12 @@ export default class MainScreen {
     const loadBtn = this.$screen.querySelector(".load");
     loadBtn.addEventListener("click", onLoadClick);
 
-    //Rank
+
+
+    /*
+      grab the load button, then register the function
+    */
+
     const rankingBtn = this.$screen.querySelector(".rank");
     rankingBtn.addEventListener("click", () => onRankClick());
 
@@ -63,31 +76,22 @@ export default class MainScreen {
 
       this.$screen.innerHTML = `
         <h1>Top 10 Rank</h1>
-        <div class="rank-container">
-          ${
-            rankarr !== null
-              ? rankarr
-                  .map((rank, index) => {
-                    return `
-              <div class="rank-data">
-              <span class="rank-data__index">${index + 1}.</span>
-              <span class="rank-data__name">${rank.username}</span>
-              <span class="rank-data__score">${rank.score}점</span>
-              </div>
-              `;
-                  })
-                  .join("")
-              : `<span>No Data</span>`
-          }
-            </div>
-          <span class="menu btn">Exit</span>
+        ${rankarr.map((rank, index) => {
+        return `<span>${index + 1}위 : ${rank.username}, ${rank.score}점</span>`
+      }).join("")}
+      <span class="menu btn">Exit</span>
       `;
       const menuBtn = this.$screen.querySelector(".menu");
       menuBtn.addEventListener("click", () => onMenuClick());
-    };
+    }
 
     const onMenuClick = () => {
       return this.render();
-    };
+    }
+    /*
+      same with the ranking
+
+      I don't think we need to make exit feature since we're on web
+    */
   };
 }
