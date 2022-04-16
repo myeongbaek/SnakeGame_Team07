@@ -11,10 +11,12 @@ export default class Game {
   renderMain;
 
   state = {
+
     playerPos: {
       x: 20,
       y: 20,
     },
+    score :0,
     gridSize: 15,
     tileCount: 40,
     trail: [],
@@ -37,7 +39,6 @@ export default class Game {
       ...nextState,
     };
   }
-
   setUp() {
     this.$target.innerHTML = `
         <canvas id="canvas" width="600" height="600"></canvas>
@@ -95,7 +96,7 @@ export default class Game {
         <span class="btn resume">Resume</span>
         <span class="btn restart">Restart</span>
         <span class="btn save">Save</span>
-        <span class="btn">Exit</span>
+        <span class="btn exit">Exit</span>
       `;
 
     overlay.appendChild(modal);
@@ -114,9 +115,10 @@ export default class Game {
       this.$target.removeChild(overlay);
       this.setState({
         ...this.state,
-        playerPos: { x: 20, y: 20 },
+        score :0,
+        playerPos: {x: 20, y: 20},
         fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        velocity: { x: 0, y: -1 },
+        velocity: {x: 0, y: -1},
         trail: [],
         tail: 5,
       });
@@ -131,6 +133,55 @@ export default class Game {
     /*
       Exit should bring the player back to main screen
     */
+    const save = this.$target.querySelector(".save");
+    save.addEventListener("click", () => {
+      this.isPaused = false;
+      this.$target.removeChild(overlay);
+      clearInterval(this.intervalId);
+      localStorage.setItem("state",JSON.stringify(this.state));
+      this.setState({
+        ...this.state,
+        score :0,
+        playerPos: {x: 20, y: 20},
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+        velocity: {x: 0, y: -1},
+        trail: [],
+        tail: 5,
+      });
+
+      clearInterval(this.intervalId);
+       this.renderMain();
+    });
+
+
+
+
+
+
+    const exit = this.$target.querySelector(".exit");
+    exit.addEventListener("click", () => {
+      this.isPaused = false;
+      this.setState({
+        playerPos: {
+          x: 20,
+          y: 20,
+        },
+        score :0,
+        gridSize: 15,
+        tileCount: 40,
+        trail: [],
+        tail: 5,
+        velocity: {
+          x: 0,
+          y: -1,
+        },
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+      });
+      clearInterval(this.intervalId);
+       this.renderMain();
+    });
+
+
   }
 
   move() {
@@ -145,16 +196,17 @@ export default class Game {
 
   isGameOver() {
     // out of bound check
+
     if (
-      this.state.playerPos.x < 0 ||
-      this.state.playerPos.x > this.state.tileCount - 1 ||
+     this.state.playerPos.x < 0||
+      this.state.playerPos.x > this.state.tileCount -1||
       this.state.playerPos.y < 0 ||
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
       return true;
     }
 
-    // self-eating check
+
     for (var i = 0; i < this.state.trail.length - 1; i++) {
       if (
         this.state.playerPos.x === this.state.trail[i].x &&
@@ -177,6 +229,7 @@ export default class Game {
     this.move();
     this.isKeyPressed = false;
 
+
     if (this.isGameOver()) {
       /*
         when the game is over,
@@ -185,11 +238,14 @@ export default class Game {
         show how much score did the player get,
         then save the data to localStorage for 'ranking' in the main screen
       */
+
+
       this.setState({
         playerPos: {
           x: 20,
           y: 20,
         },
+        score :0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -230,6 +286,9 @@ export default class Game {
     ) {
       this.updateFruit();
       this.state.tail++;
+      this.state.score++;
+      localStorage.setItem("score",this.state.score)
+
     }
 
     this.$canvasContext.fillStyle = "red";
