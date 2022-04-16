@@ -111,8 +111,6 @@ export default class Game {
 
     const restart = this.$target.querySelector(".restart");
     restart.addEventListener("click", () => {
-    //  this.state.score=0;
-      localStorage.setItem("score",this.state.score)
       this.isPaused = false;
       this.$target.removeChild(overlay);
       this.setState({
@@ -240,8 +238,7 @@ export default class Game {
         show how much score did the player get,
         then save the data to localStorage for 'ranking' in the main screen
       */
-      this.state.score=0;
-      localStorage.setItem("score",this.state.score)
+
 
       this.setState({
         playerPos: {
@@ -293,9 +290,7 @@ export default class Game {
       localStorage.setItem("score",this.state.score)
 
     }
-    this.$canvasContext.font = '15pt Calibri';
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
+
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
       this.state.fruitPos.x * this.state.gridSize,
