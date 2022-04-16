@@ -271,9 +271,8 @@ export default class Game {
         savedData.sort(CompareRank);
         if (savedData.length > 10) {
           savedData.pop();
-        }
+        } //상위 10개만 저장됨
         localStorage.setItem("rankData", JSON.stringify(savedData));
-        // only 1~10 scores are saved to local storage
 
 
         this.setState({

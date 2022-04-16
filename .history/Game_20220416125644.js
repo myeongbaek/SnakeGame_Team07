@@ -271,35 +271,33 @@ export default class Game {
         savedData.sort(CompareRank);
         if (savedData.length > 10) {
           savedData.pop();
-        }
+        } //상위 10개만 저장됨
         localStorage.setItem("rankData", JSON.stringify(savedData));
-        // only 1~10 scores are saved to local storage
-
-
-        this.setState({
-          playerPos: {
-            x: 20,
-            y: 20,
-          },
-          score: 0,
-          gridSize: 15,
-          tileCount: 40,
-          trail: [],
-          tail: 5,
-          velocity: {
-            x: 0,
-            y: -1,
-          },
-          fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        });
-        return this.renderMain();
-
       }
       const username = document.getElementById("UserName")
       const userform = document.querySelector("form");
       userform.addEventListener("submit", (event) => isBntOnClick(event));
 
+      /*
+      this.setState({
+        playerPos: {
+          x: 20,
+          y: 20,
+        },
+        score: 0,
+        gridSize: 15,
+        tileCount: 40,
+        trail: [],
+        tail: 5,
+        velocity: {
+          x: 0,
+          y: -1,
+        },
+        fruitPos: GenerateFruitPosition([], this.state.tileCount),
+      });
+      */
       clearInterval(this.intervalId);
+      return this.renderMain();
     }
 
     this.$canvasContext.fillStyle = "black";

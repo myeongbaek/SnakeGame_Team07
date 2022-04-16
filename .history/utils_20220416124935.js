@@ -15,5 +15,26 @@ export function GenerateFruitPosition(trail, tileCount) {
 
 
 export function CompareRank(r1, r2) {
-  return r2.score - r1.score;
+  return r1.score - r2.score;
+}
+
+export function GameSetting() {
+
+  this.setState({
+    playerPos: {
+      x: 20,
+      y: 20,
+    },
+    score: 0,
+    gridSize: 15,
+    tileCount: 40,
+    trail: [],
+    tail: 5,
+    velocity: {
+      x: 0,
+      y: -1,
+    },
+    fruitPos: GenerateFruitPosition([], this.state.tileCount),
+  });
+
 }
