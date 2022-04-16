@@ -72,19 +72,12 @@ export default class MainScreen {
       this.$target.innerHTML = ``;
       this.$target.appendChild(this.$screen);
 
+      console.log(rankarr[0].score);
       this.$screen.innerHTML = `
-        <h1>Top 10 Rank</h1>
-        ${rankarr.map((rank, index) => {
-        return `<span>${index + 1}위 : ${rank.username}, ${rank.score}점</span>`
-      }).join("")}
-      <span class="menu btn">Exit</span>
+        <h1>Rank</h1>
+        <span>${rankarr[0].username} : ${rankarr[0].score}</span>
       `;
-      const menuBtn = this.$screen.querySelector(".menu");
-      menuBtn.addEventListener("click", () => onMenuClick());
-    }
 
-    const onMenuClick = () => {
-      return this.render();
     }
     /*
       same with the ranking

@@ -80,11 +80,11 @@ export default class MainScreen {
       <span class="menu btn">Exit</span>
       `;
       const menuBtn = this.$screen.querySelector(".menu");
-      menuBtn.addEventListener("click", () => onMenuClick());
+      menuBtn.addEventListener("click", onMenuClick);
     }
 
     const onMenuClick = () => {
-      return this.render();
+      return this.render;
     }
     /*
       same with the ranking

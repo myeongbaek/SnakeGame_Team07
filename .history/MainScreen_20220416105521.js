@@ -44,7 +44,7 @@ export default class MainScreen {
     */
     const onLoadClick = () => {
 
-      this.game.state = JSON.parse(localStorage.getItem("state"));
+      this.game.state=JSON.parse(localStorage.getItem("state"));
 
       this.game.setUp();
       this.game.gameLoop();
@@ -64,28 +64,6 @@ export default class MainScreen {
       grab the load button, then register the function
     */
 
-    const rankingBtn = this.$screen.querySelector(".rank");
-    rankingBtn.addEventListener("click", () => onRankClick());
-
-    const onRankClick = () => {
-      let rankarr = JSON.parse(localStorage.getItem("rankData"));
-      this.$target.innerHTML = ``;
-      this.$target.appendChild(this.$screen);
-
-      this.$screen.innerHTML = `
-        <h1>Top 10 Rank</h1>
-        ${rankarr.map((rank, index) => {
-        return `<span>${index + 1}위 : ${rank.username}, ${rank.score}점</span>`
-      }).join("")}
-      <span class="menu btn">Exit</span>
-      `;
-      const menuBtn = this.$screen.querySelector(".menu");
-      menuBtn.addEventListener("click", () => onMenuClick());
-    }
-
-    const onMenuClick = () => {
-      return this.render();
-    }
     /*
       same with the ranking
 

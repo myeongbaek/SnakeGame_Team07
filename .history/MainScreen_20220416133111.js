@@ -75,16 +75,10 @@ export default class MainScreen {
       this.$screen.innerHTML = `
         <h1>Top 10 Rank</h1>
         ${rankarr.map((rank, index) => {
-        return `<span>${index + 1}위 : ${rank.username}, ${rank.score}점</span>`
+        return `<span>${index + 1}위 : ${rank.username} : ${rank.score}</span>`
       }).join("")}
-      <span class="menu btn">Exit</span>
-      `;
-      const menuBtn = this.$screen.querySelector(".menu");
-      menuBtn.addEventListener("click", () => onMenuClick());
-    }
+    `;
 
-    const onMenuClick = () => {
-      return this.render();
     }
     /*
       same with the ranking

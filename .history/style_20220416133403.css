@@ -34,9 +34,7 @@
 
 .box span {
   color: white;
-  text-align: start;
-  width : 150px;
-  padding-left: 10px;
+  text-align: top;
 }
 
 .btn {

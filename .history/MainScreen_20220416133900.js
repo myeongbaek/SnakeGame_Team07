@@ -84,7 +84,7 @@ export default class MainScreen {
     }
 
     const onMenuClick = () => {
-      return this.render();
+
     }
     /*
       same with the ranking
