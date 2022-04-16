@@ -34,9 +34,6 @@
 
 .box span {
   color: white;
-  text-align: start;
-  width : 150px;
-  padding-left: 10px;
 }
 
 .btn {
@@ -50,6 +47,11 @@
   margin: 5px;
   padding: 5px;
   color: white;
+}
+
+.disabled {
+  color: grey !important;
+  cursor: unset;
 }
 
 .btn:hover::after {
@@ -114,5 +116,31 @@ canvas {
 }
 
 input {
-  width : 100px;
+  width: 100px;
+}
+
+.rank-container {
+  width: 150px;
+  height: 350px;
+}
+
+.rank-data {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0px;
+  margin: 5px 0px;
+}
+
+.rank-data .rank-data__index {
+  text-align: center;
+}
+
+.rank-data .rank-data__name {
+  text-align: start;
+  padding-left: 10px;
+  flex-grow: 1;
+}
+
+.rank-data .rank-data__score {
+  text-align: end;
 }

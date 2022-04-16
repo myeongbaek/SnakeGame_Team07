@@ -11,7 +11,6 @@ export default class Game {
   renderMain;
 
   state = {
-
     playerPos: {
       x: 20,
       y: 20,
@@ -125,14 +124,6 @@ export default class Game {
       this.gameLoop();
     });
 
-    /*
-      need to implement saving feature with localStorage
-      according to the assignment guide, we should save data then go back to main screen
-    */
-
-    /*
-      Exit should bring the player back to main screen
-    */
     const save = this.$target.querySelector(".save");
     save.addEventListener("click", () => {
       this.isPaused = false;
@@ -148,15 +139,9 @@ export default class Game {
         trail: [],
         tail: 5,
       });
-
       clearInterval(this.intervalId);
       this.renderMain();
     });
-
-
-
-
-
 
     const exit = this.$target.querySelector(".exit");
     exit.addEventListener("click", () => {
@@ -180,8 +165,6 @@ export default class Game {
       clearInterval(this.intervalId);
       this.renderMain();
     });
-
-
   }
 
   move() {
@@ -196,7 +179,6 @@ export default class Game {
 
   isGameOver() {
     // out of bound check
-
     if (
       this.state.playerPos.x < 0 ||
       this.state.playerPos.x > this.state.tileCount - 1 ||
@@ -206,7 +188,7 @@ export default class Game {
       return true;
     }
 
-
+    //self-eating check
     for (var i = 0; i < this.state.trail.length - 1; i++) {
       if (
         this.state.playerPos.x === this.state.trail[i].x &&
@@ -229,16 +211,7 @@ export default class Game {
     this.move();
     this.isKeyPressed = false;
 
-
     if (this.isGameOver()) {
-      /*
-        when the game is over,
-        instead of just going back to main screen,
-        we should display a modal screen and
-        show how much score did the player get,
-        then save the data to localStorage for 'ranking' in the main screen
-      */
-
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
 
@@ -262,9 +235,8 @@ export default class Game {
       const isBntOnClick = (event) => {
         event.preventDefault();
         const rankData = { username: username.value, score: this.state.score };
-        console.log(this);
         let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? savedData = [] : savedData;
+        savedData === null ? (savedData = []) : savedData;
 
         savedData.push(rankData);
         savedData.sort(CompareRank);
@@ -273,7 +245,6 @@ export default class Game {
         }
         localStorage.setItem("rankData", JSON.stringify(savedData));
         // only 1~10 scores are saved to local storage
-
 
         this.setState({
           playerPos: {
@@ -292,9 +263,8 @@ export default class Game {
           fruitPos: GenerateFruitPosition([], this.state.tileCount),
         });
         return this.renderMain();
-
-      }
-      const username = document.getElementById("UserName")
+      };
+      const username = document.getElementById("UserName");
       const userform = document.querySelector("form");
       userform.addEventListener("submit", (event) => isBntOnClick(event));
 
@@ -351,9 +321,8 @@ export default class Game {
       this.updateFruit();
       this.state.tail++;
       this.state.score++;
-
     }
-    localStorage.setItem("score", this.state.score)
+    localStorage.setItem("score", this.state.score);
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(

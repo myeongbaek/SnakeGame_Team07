@@ -15,7 +15,6 @@ export default class MainScreen {
   }
 
   render = () => {
-    console.log(this);
     this.$screen.innerHTML = `
         <h1>Snake</h1>
         <span class="start btn">Start</span>
@@ -25,45 +24,26 @@ export default class MainScreen {
     `;
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
-    const onStartClick = () => {
 
+    //Start
+    const onStartClick = () => {
       this.game.setUp();
       this.game.gameLoop();
     };
     const startBtn = this.$screen.querySelector(".start");
     startBtn.addEventListener("click", onStartClick);
 
-    /*
-      here we need to make the rest of the buttons in main screen work
-
-      line 36 to 39 is function to start the game
-
-      line 40 grabs the start button from the page and let you work with it
-
-      line 41 registers the game-start function to the start button
-    */
+    //Load
     const onLoadClick = () => {
-
       this.game.state = JSON.parse(localStorage.getItem("state"));
 
       this.game.setUp();
       this.game.gameLoop();
-
-
-      /*
-        load the saved data, then start the game
-        google about "localStorage" in JavaScript
-      */
     };
     const loadBtn = this.$screen.querySelector(".load");
     loadBtn.addEventListener("click", onLoadClick);
 
-
-
-    /*
-      grab the load button, then register the function
-    */
-
+    //Rank
     const rankingBtn = this.$screen.querySelector(".rank");
     rankingBtn.addEventListener("click", () => onRankClick());
 
@@ -74,22 +54,31 @@ export default class MainScreen {
 
       this.$screen.innerHTML = `
         <h1>Top 10 Rank</h1>
-        ${rankarr.map((rank, index) => {
-        return `<span>${index + 1}위 : ${rank.username}, ${rank.score}점</span>`
-      }).join("")}
-      <span class="menu btn">Exit</span>
+        <div class="rank-container">
+          ${
+            rankarr !== null
+              ? rankarr
+                  .map((rank, index) => {
+                    return `
+              <div class="rank-data">
+              <span class="rank-data__index">${index + 1}.</span>
+              <span class="rank-data__name">${rank.username}</span>
+              <span class="rank-data__score">${rank.score}점</span>
+              </div>
+              `;
+                  })
+                  .join("")
+              : `<span>No Data</span>`
+          }
+            </div>
+          <span class="menu btn">Exit</span>
       `;
       const menuBtn = this.$screen.querySelector(".menu");
       menuBtn.addEventListener("click", () => onMenuClick());
-    }
+    };
 
     const onMenuClick = () => {
       return this.render();
-    }
-    /*
-      same with the ranking
-
-      I don't think we need to make exit feature since we're on web
-    */
+    };
   };
 }
