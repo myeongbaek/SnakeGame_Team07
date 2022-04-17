@@ -330,12 +330,6 @@ export default class Game {
     }
     localStorage.setItem("score", this.state.score);
 
-    // Showing Score on the bottom of left
-    this.$canvasContext.font = '15pt Calibri';
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText("Score:" + localStorage.getItem("score"), 10, 580);
-
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
       this.state.fruitPos.x * this.state.gridSize,
@@ -346,10 +340,11 @@ export default class Game {
   }
 
   gameLoop() {
-    this.onGameState = true;
-
     this.intervalId = setInterval(() => {
       this.render();
+      this.onGameState = true;
     }, 1000 / 15);
+
   }
+
 }

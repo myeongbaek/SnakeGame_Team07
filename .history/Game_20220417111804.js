@@ -330,7 +330,6 @@ export default class Game {
     }
     localStorage.setItem("score", this.state.score);
 
-    // Showing Score on the bottom of left
     this.$canvasContext.font = '15pt Calibri';
     this.$canvasContext.lineWidth = 3;
     this.$canvasContext.fillStyle = "grey";
