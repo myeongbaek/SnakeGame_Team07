@@ -49,6 +49,13 @@ export default class Game {
   }
 
   keyPress(event) {
+    /* 
+    isKeyPressed and isPaused prevent changes from keypressing twice
+    but there is a problem that pause state is showing on the mainmenu
+
+    so i suggest to change this code on a perspective of screen not a keypressed
+    also we can make it go back to gamestate when pressed ESC twice(same with resume)
+    */
     if (this.isKeyPressed || this.isPaused) return;
     switch (event.key) {
       case "ArrowUp":
