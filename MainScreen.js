@@ -64,21 +64,20 @@ export default class MainScreen {
       this.$screen.innerHTML = `
         <h1>Top 10 Rank</h1>
         <div class="rank-container">
-          ${
-            rankarr !== null
-              ? rankarr
-                  .map((rank, index) => {
-                    return `
+          ${rankarr !== null
+          ? rankarr
+            .map((rank, index) => {
+              return `
               <div class="rank-data">
               <span class="rank-data__index">${index + 1}.</span>
               <span class="rank-data__name">${rank.username}</span>
               <span class="rank-data__score">${rank.score}점</span>
               </div>
               `;
-                  })
-                  .join("")
-              : `<span>No Data</span>`
-          }
+            })
+            .join("")
+          : `<span>No Data</span>`
+        }
             </div>
           <span class="menu btn">Exit</span>
       `;

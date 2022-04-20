@@ -217,6 +217,7 @@ export default class Game {
 
     if (this.isGameOver()) {
       this.onGameState = false;
+      localStorage.removeItem("state");
 
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
@@ -330,7 +331,7 @@ export default class Game {
     }
     localStorage.setItem("score", this.state.score);
 
-    // Showing Score on the bottom of left
+    // Displaying Score 
     this.$canvasContext.font = '15pt Calibri';
     this.$canvasContext.lineWidth = 3;
     this.$canvasContext.fillStyle = "grey";
