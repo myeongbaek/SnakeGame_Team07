@@ -4,19 +4,20 @@ export function GenerateFruitPosition(trail, tileCount) {
     x = Math.floor(Math.random() * tileCount);
     y = Math.floor(Math.random() * tileCount);
 
-    if (trail.includes({ x, y })) continue;
+    if (trail.some((pos) => pos.x === x && pos.y === y)) continue;
     return { x, y };
   }
 }
 
-export function GenerateFruitPositionDual(trail1, trail2, tileCount) {
+export function GenerateFruitPositionDual(trail1, trail2, fruits, tileCount) {
   let x, y;
   while (true) {
     x = Math.floor(Math.random() * tileCount.x);
     y = Math.floor(Math.random() * tileCount.y);
 
-    if (trail1.includes({ x, y })) continue;
-    if (trail2.includes({ x, y })) continue;
+    if (trail1.some((pos) => pos.x === x && pos.y === y)) continue;
+    if (trail2.some((pos) => pos.x === x && pos.y === y)) continue;
+    if (fruits.some((pos) => pos.x === x && pos.y === y)) continue;
     return { x, y };
   }
 }
