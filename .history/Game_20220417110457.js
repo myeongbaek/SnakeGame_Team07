@@ -216,14 +216,8 @@ export default class Game {
     this.isKeyPressed = false;
 
     if (this.isGameOver()) {
-<<<<<<< HEAD
-      removeev;
-      this.isPaused = true;
-=======
       this.onGameState = false;
-      localStorage.removeItem("state");
 
->>>>>>> c07f159ce87d5ab5ed7c8dc1804e262afccff3d2
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
 
@@ -335,12 +329,6 @@ export default class Game {
       this.state.score++;
     }
     localStorage.setItem("score", this.state.score);
-
-    // Displaying Score 
-    this.$canvasContext.font = '15pt Calibri';
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText("Score:" + localStorage.getItem("score"), 10, 580);
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(

@@ -8,7 +8,6 @@ export default class Game {
   intervalId;
   isPaused = false;
   isKeyPressed = false;
-  onGameState = false;
   renderMain;
 
   state = {
@@ -45,10 +44,16 @@ export default class Game {
     `;
     this.$canvas = document.getElementById("canvas");
     this.$canvasContext = this.$canvas.getContext("2d");
-    addEventListener("keydown", (event) => this.keyPress(event));
   }
 
   keyPress(event) {
+    /* 
+    isKeyPressed and isPaused prevent changes from keypressing twice
+    but there is a problem that pause state is showing on the mainmenu
+
+    so i suggest to change this code on a perspective of screen not a keypressed
+    also we can make it go back to gamestate when pressed ESC twice(same with resume)
+    */
     if (this.isKeyPressed || this.isPaused) return;
     switch (event.key) {
       case "ArrowUp":
@@ -76,17 +81,14 @@ export default class Game {
         this.isKeyPressed = true;
         break;
       case "Escape":
-        if (this.onGameState) {
-          clearInterval(this.intervalId);
-          this.pause();
-        }
+        clearInterval(this.intervalId);
+        this.pause();
         break;
     }
   }
 
   pause() {
     this.isPaused = true;
-    this.onGameState = false;
 
     const overlay = document.createElement("div");
     overlay.classList = "overlay";
@@ -216,14 +218,6 @@ export default class Game {
     this.isKeyPressed = false;
 
     if (this.isGameOver()) {
-<<<<<<< HEAD
-      removeev;
-      this.isPaused = true;
-=======
-      this.onGameState = false;
-      localStorage.removeItem("state");
-
->>>>>>> c07f159ce87d5ab5ed7c8dc1804e262afccff3d2
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
 
@@ -336,12 +330,6 @@ export default class Game {
     }
     localStorage.setItem("score", this.state.score);
 
-    // Displaying Score 
-    this.$canvasContext.font = '15pt Calibri';
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText("Score:" + localStorage.getItem("score"), 10, 580);
-
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
       this.state.fruitPos.x * this.state.gridSize,
@@ -352,8 +340,6 @@ export default class Game {
   }
 
   gameLoop() {
-    this.onGameState = true;
-
     this.intervalId = setInterval(() => {
       this.render();
     }, 1000 / 15);
