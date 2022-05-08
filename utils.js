@@ -4,13 +4,9 @@ export function GenerateFruitPosition(trail, tileCount) {
     x = Math.floor(Math.random() * tileCount);
     y = Math.floor(Math.random() * tileCount);
 
-    let flag = true;
-    for (var i = 0; i < trail.length; i++) {
-      if (x == trail[i].x && y == trail[i].y) flag = false;
-    }
-    if (flag) break;
+    if (trail.includes({ x, y })) continue;
+    return { x, y };
   }
-  return { x, y };
 }
 
 export function GenerateFruitPositionDual(trail1, trail2, tileCount) {
@@ -19,16 +15,10 @@ export function GenerateFruitPositionDual(trail1, trail2, tileCount) {
     x = Math.floor(Math.random() * tileCount.x);
     y = Math.floor(Math.random() * tileCount.y);
 
-    let flag = true;
-    for (var i = 0; i < trail1.length; i++) {
-      if (x == trail1[i].x && y == trail1[i].y) flag = false;
-    }
-    for (var i = 0; i < trail2.length; i++) {
-      if (x == trail2[i].x && y == trail2[i].y) flag = false;
-    }
-    if (flag) break;
+    if (trail1.includes({ x, y })) continue;
+    if (trail2.includes({ x, y })) continue;
+    return { x, y };
   }
-  return { x, y };
 }
 
 export function CompareRank(r1, r2) {
