@@ -1,8 +1,4 @@
-import {
-  CompareRank,
-  GenerateFruitPosition,
-  GenerateFruitPositionDual,
-} from "./utils.js";
+import { GenerateFruitPositionDual } from "./utils.js";
 
 export default class Dual {
   $target;
@@ -46,12 +42,16 @@ export default class Dual {
       x: 80,
       y: 40,
     },
-    fruitPos: { x: 10, y: 2 },
+    fruits: [
+      { x: 30, y: 10 },
+      { x: 70, y: 30 },
+    ],
   };
 
   constructor({ $target, renderMain }) {
     this.$target = $target;
     this.renderMain = renderMain;
+    console.log(this.state.fruits);
   }
 
   setState(nextState) {
@@ -226,7 +226,20 @@ export default class Dual {
           trail: [],
           tail: 5,
         },
-        fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
+        fruits: [
+          GenerateFruitPositionDual(
+            [],
+            [],
+            this.state.fruits,
+            this.state.tileCount
+          ),
+          GenerateFruitPositionDual(
+            [],
+            [],
+            this.state.fruits,
+            this.state.tileCount
+          ),
+        ],
       });
       this.gameLoop();
     });
@@ -260,7 +273,20 @@ export default class Dual {
           trail: [],
           tail: 5,
         },
-        fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
+        fruits: [
+          GenerateFruitPositionDual(
+            [],
+            [],
+            this.state.fruits,
+            this.state.tileCount
+          ),
+          GenerateFruitPositionDual(
+            [],
+            [],
+            this.state.fruits,
+            this.state.tileCount
+          ),
+        ],
       });
       clearInterval(this.intervalId);
       this.renderMain();
@@ -363,13 +389,16 @@ export default class Dual {
     return false;
   }
 
-  updateFruit() {
+  updateFruit(index) {
+    const updatedFruits = [...this.state.fruits];
+    updatedFruits[index] = GenerateFruitPositionDual(
+      this.state.player1.trail,
+      this.state.player2.trail,
+      this.state.fruits,
+      this.state.tileCount
+    );
     this.setState({
-      fruitPos: GenerateFruitPositionDual(
-        this.state.player1.trail,
-        this.state.player2.trail,
-        this.state.tileCount
-      ),
+      fruits: updatedFruits,
     });
   }
 
@@ -429,7 +458,20 @@ export default class Dual {
             x: 80,
             y: 40,
           },
-          fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
+          fruits: [
+            GenerateFruitPositionDual(
+              [],
+              [],
+              this.state.fruits,
+              this.state.tileCount
+            ),
+            GenerateFruitPositionDual(
+              [],
+              [],
+              this.state.fruits,
+              this.state.tileCount
+            ),
+          ],
         });
         clearInterval(this.intervalId);
         this.renderMain();
@@ -477,26 +519,49 @@ export default class Dual {
       );
     });
 
+    //get fruit
+
+    let index;
+
+    //player1 hits fruit
+
     if (
-      this.state.player1.playerPos.x === this.state.fruitPos.x &&
-      this.state.player1.playerPos.y === this.state.fruitPos.y
+      this.state.fruits.some((pos, i) => {
+        index = i;
+        return (
+          pos.x === this.state.player1.playerPos.x &&
+          pos.y === this.state.player1.playerPos.y
+        );
+      })
     ) {
-      console.log("hit");
-      this.updateFruit();
+      this.updateFruit(index);
       this.state.player1.tail++;
     }
+
+    //player2 hits fruits
     if (
-      this.state.player2.playerPos.x === this.state.fruitPos.x &&
-      this.state.player2.playerPos.y === this.state.fruitPos.y
+      this.state.fruits.some((pos, i) => {
+        index = i;
+        return (
+          pos.x === this.state.player2.playerPos.x &&
+          pos.y === this.state.player2.playerPos.y
+        );
+      })
     ) {
-      this.updateFruit();
+      this.updateFruit(index);
       this.state.player2.tail++;
     }
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
-      this.state.fruitPos.x * this.state.gridSize,
-      this.state.fruitPos.y * this.state.gridSize,
+      this.state.fruits[0].x * this.state.gridSize,
+      this.state.fruits[0].y * this.state.gridSize,
+      this.state.gridSize - 2,
+      this.state.gridSize - 2
+    );
+    this.$canvasContext.fillRect(
+      this.state.fruits[1].x * this.state.gridSize,
+      this.state.fruits[1].y * this.state.gridSize,
       this.state.gridSize - 2,
       this.state.gridSize - 2
     );
