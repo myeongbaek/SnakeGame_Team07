@@ -11,12 +11,12 @@ export default class Dual {
 
   intervalId;
   isPaused = false;
-  isKeyPressed = false;
   onGameState = false;
   renderMain;
 
   state = {
     player1: {
+      isKeyPressed: false,
       playerPos: {
         x: 0,
         y: -1,
@@ -30,9 +30,10 @@ export default class Dual {
       },
     },
     player2: {
+      isKeyPressed: false,
       playerPos: {
-        x: 39,
-        y: 80,
+        x: 79,
+        y: 40,
       },
       score: 0,
       trail: [],
@@ -47,7 +48,7 @@ export default class Dual {
       x: 80,
       y: 40,
     },
-    fruitPos: { x: 5, y: 5 },
+    fruitPos: { x: 10, y: 2 },
   };
 
   constructor({ $target, renderMain }) {
@@ -67,41 +68,105 @@ export default class Dual {
     `;
     this.$canvas = document.getElementById("canvas");
     this.$canvasContext = this.$canvas.getContext("2d");
-    addEventListener("keydown", (event) => this.keyPress(event));
+    addEventListener("keydown", (event) => this.p1KeyPress(event));
+    addEventListener("keydown", (event) => this.p2KeyPress(event));
+    addEventListener("keydown", (event) => this.globalKeyPress(event));
   }
-
-  keyPress(event) {
-    if (this.isKeyPressed || this.isPaused) return;
+  globalKeyPress(event) {
     switch (event.key) {
-      case "ArrowUp":
-        this.state.velocity.y !== 1
-          ? this.setState({ velocity: { x: 0, y: -1 } })
-          : null;
-        this.isKeyPressed = true;
-        break;
-      case "ArrowDown":
-        this.state.velocity.y !== -1
-          ? this.setState({ velocity: { x: 0, y: 1 } })
-          : null;
-        this.isKeyPressed = true;
-        break;
-      case "ArrowLeft":
-        this.state.velocity.x !== 1
-          ? this.setState({ velocity: { x: -1, y: 0 } })
-          : null;
-        this.isKeyPressed = true;
-        break;
-      case "ArrowRight":
-        this.state.velocity.x !== -1
-          ? this.setState({ velocity: { x: 1, y: 0 } })
-          : null;
-        this.isKeyPressed = true;
-        break;
       case "Escape":
         if (this.onGameState) {
           clearInterval(this.intervalId);
           this.pause();
         }
+        break;
+    }
+  }
+  p1KeyPress(event) {
+    if (this.state.player1.isKeyPressed || this.isPaused) return;
+    switch (event.key) {
+      case "ArrowUp":
+        event.preventDefault();
+        this.state.player1.velocity.y !== 1
+          ? this.setState({
+              player1: {
+                ...this.state.player1,
+                velocity: { x: 0, y: -1 },
+              },
+            })
+          : null;
+        this.state.player1.isKeyPressed = true;
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        this.state.player1.velocity.y !== -1
+          ? this.setState({
+              player1: { ...this.state.player1, velocity: { x: 0, y: 1 } },
+            })
+          : null;
+        this.state.player1.isKeyPressed = true;
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        this.state.player1.velocity.x !== 1
+          ? this.setState({
+              player1: { ...this.state.player1, velocity: { x: -1, y: 0 } },
+            })
+          : null;
+        this.state.player1.isKeyPressed = true;
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        this.state.player1.velocity.x !== -1
+          ? this.setState({
+              player1: { ...this.state.player1, velocity: { x: 1, y: 0 } },
+            })
+          : null;
+        this.state.player1.isKeyPressed = true;
+        break;
+    }
+  }
+  p2KeyPress(event) {
+    if (this.state.player2.isKeyPressed || this.isPaused) return;
+    switch (event.key) {
+      case "w":
+        event.preventDefault();
+        this.state.player2.velocity.y !== 1
+          ? this.setState({
+              player2: {
+                ...this.state.player2,
+                velocity: { x: 0, y: -1 },
+              },
+            })
+          : null;
+        this.state.player2.isKeyPressed = true;
+        break;
+      case "s":
+        event.preventDefault();
+        this.state.player2.velocity.y !== -1
+          ? this.setState({
+              player2: { ...this.state.player2, velocity: { x: 0, y: 1 } },
+            })
+          : null;
+        this.state.player2.isKeyPressed = true;
+        break;
+      case "a":
+        event.preventDefault();
+        this.state.player2.velocity.x !== 1
+          ? this.setState({
+              player2: { ...this.state.player2, velocity: { x: -1, y: 0 } },
+            })
+          : null;
+        this.state.player2.isKeyPressed = true;
+        break;
+      case "d":
+        event.preventDefault();
+        this.state.player2.velocity.x !== -1
+          ? this.setState({
+              player2: { ...this.state.player2, velocity: { x: 1, y: 0 } },
+            })
+          : null;
+        this.state.player2.isKeyPressed = true;
         break;
     }
   }
@@ -154,8 +219,8 @@ export default class Dual {
         },
         player2: {
           playerPos: {
-            x: 39,
-            y: 80,
+            x: 79,
+            y: 39,
           },
           velocity: {
             x: 0,
@@ -165,7 +230,7 @@ export default class Dual {
           trail: [],
           tail: 5,
         },
-        fruitPos: GenerateFruitPositionDual([], this.state.tileCount),
+        fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
       });
       this.gameLoop();
     });
@@ -201,7 +266,7 @@ export default class Dual {
           trail: [],
           tail: 5,
         },
-        fruitPos: GenerateFruitPositionDual([], this.state.tileCount),
+        fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
       });
       clearInterval(this.intervalId);
       this.renderMain();
@@ -212,12 +277,14 @@ export default class Dual {
     this.setState({
       ...this.state,
       player1: {
+        ...this.state.player1,
         playerPos: {
           x: this.state.player1.playerPos.x + this.state.player1.velocity.x,
           y: this.state.player1.playerPos.y + this.state.player1.velocity.y,
         },
       },
       player2: {
+        ...this.state.player2,
         playerPos: {
           x: this.state.player2.playerPos.x + this.state.player2.velocity.x,
           y: this.state.player2.playerPos.y + this.state.player2.velocity.y,
@@ -238,14 +305,33 @@ export default class Dual {
       this.state.player2.playerPos.y < 0 ||
       this.state.player2.playerPos.y > this.state.tileCount.y - 1
     ) {
+      console.log(this.state.player1);
+      console.log(this.state.player2);
       return true;
     }
 
-    //self-eating check
-    for (var i = 0; i < this.state.trail.length - 1; i++) {
+    //collision check
+    if (
+      this.state.player1.playerPos.x === this.state.player2.playerPos.x &&
+      this.state.player1.playerPos.y === this.state.player2.playerPos.y
+    )
+      return true;
+    for (var i = 0; i < this.state.player1.trail.length - 1; i++) {
       if (
-        this.state.playerPos.x === this.state.trail[i].x &&
-        this.state.playerPos.y === this.state.trail[i].y
+        (this.state.player1.playerPos.x === this.state.player1.trail[i].x &&
+          this.state.player1.playerPos.y === this.state.player1.trail[i].y) ||
+        (this.state.player2.playerPos.x === this.state.player1.trail[i].x &&
+          this.state.player2.playerPos.y === this.state.player1.trail[i].y)
+      ) {
+        return true;
+      }
+    }
+    for (var i = 0; i < this.state.player2.trail.length - 1; i++) {
+      if (
+        (this.state.player2.playerPos.x === this.state.player2.trail[i].x &&
+          this.state.player2.playerPos.y === this.state.player2.trail[i].y) ||
+        (this.state.player1.playerPos.x === this.state.player2.trail[i].x &&
+          this.state.player1.playerPos.y === this.state.player2.trail[i].y)
       ) {
         return true;
       }
@@ -257,7 +343,8 @@ export default class Dual {
   updateFruit() {
     this.setState({
       fruitPos: GenerateFruitPositionDual(
-        this.state.trail,
+        this.state.player1.trail,
+        this.state.player2.trail,
         this.state.tileCount
       ),
     });
@@ -265,11 +352,11 @@ export default class Dual {
 
   render() {
     this.move();
-    this.isKeyPressed = false;
+    this.state.player1.isKeyPressed = false;
+    this.state.player2.isKeyPressed = false;
 
     if (this.isGameOver()) {
       this.onGameState = false;
-      localStorage.removeItem("state");
 
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
@@ -279,78 +366,48 @@ export default class Dual {
 
       modal.innerHTML = `
             <h1>You died</h1>
-            <span class="score">Score : ${this.state.score}</span>
-            <form>
-            <input type="text" id="UserName" placeholder="username"></input>
-            <button>-></button>
-            </form>
-            
             <span class="btn exit">Exit</span>
           `;
 
       overlay.appendChild(modal);
       this.$target.appendChild(overlay);
 
-      const isBntOnClick = (event) => {
-        event.preventDefault();
-        const rankData = { username: username.value, score: this.state.score };
-        let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? (savedData = []) : savedData;
-
-        savedData.push(rankData);
-        savedData.sort(CompareRank);
-        if (savedData.length > 10) {
-          savedData.pop();
-        }
-        localStorage.setItem("rankData", JSON.stringify(savedData));
-        // only 1~10 scores are saved to local storage
-
-        this.setState({
-          playerPos: {
-            x: 20,
-            y: 20,
-          },
-          score: 0,
-          gridSize: 15,
-          tileCount: {
-            x: 80,
-            y: 40,
-          },
-          trail: [],
-          tail: 5,
-          velocity: {
-            x: 0,
-            y: -1,
-          },
-          fruitPos: GenerateFruitPositionDual([], this.state.tileCount),
-        });
-        return this.renderMain();
-      };
-      const username = document.getElementById("UserName");
-      const userform = document.querySelector("form");
-      userform.addEventListener("submit", (event) => isBntOnClick(event));
-
       const exit = this.$target.querySelector(".exit");
       exit.addEventListener("click", () => {
         this.isPaused = false;
         this.setState({
-          playerPos: {
-            x: 20,
-            y: 20,
+          player1: {
+            playerPos: {
+              x: 0,
+              y: -1,
+            },
+            score: 0,
+            trail: [],
+            tail: 5,
+            velocity: {
+              x: 0,
+              y: 1,
+            },
           },
-          score: 0,
+          player2: {
+            playerPos: {
+              x: 79,
+              y: 40,
+            },
+            score: 0,
+            trail: [],
+            tail: 5,
+            velocity: {
+              x: 0,
+              y: -1,
+            },
+          },
           gridSize: 15,
           tileCount: {
             x: 80,
             y: 40,
           },
-          trail: [],
-          tail: 5,
-          velocity: {
-            x: 0,
-            y: -1,
-          },
-          fruitPos: GenerateFruitPositionDual([], this.state.tileCount),
+          fruitPos: GenerateFruitPositionDual([], [], this.state.tileCount),
         });
         clearInterval(this.intervalId);
         this.renderMain();
@@ -362,15 +419,34 @@ export default class Dual {
     this.$canvasContext.fillStyle = "black";
     this.$canvasContext.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
 
-    this.state.trail.push({
-      x: this.state.playerPos.x,
-      y: this.state.playerPos.y,
+    this.state.player1.trail.push({
+      x: this.state.player1.playerPos.x,
+      y: this.state.player1.playerPos.y,
+    });
+    while (this.state.player1.trail.length > this.state.player1.tail)
+      this.state.player1.trail.shift();
+
+    this.state.player2.trail.push({
+      x: this.state.player2.playerPos.x,
+      y: this.state.player2.playerPos.y,
+    });
+    while (this.state.player2.trail.length > this.state.player2.tail)
+      this.state.player2.trail.shift();
+
+    //draw player1
+    this.$canvasContext.fillStyle = "lime";
+    this.state.player1.trail.forEach((body) => {
+      this.$canvasContext.fillRect(
+        body.x * this.state.gridSize,
+        body.y * this.state.gridSize,
+        this.state.gridSize - 2,
+        this.state.gridSize - 2
+      );
     });
 
-    while (this.state.trail.length > this.state.tail) this.state.trail.shift();
-
-    this.$canvasContext.fillStyle = "lime";
-    this.state.trail.forEach((body) => {
+    // draw player 2
+    this.$canvasContext.fillStyle = "blue";
+    this.state.player2.trail.forEach((body) => {
       this.$canvasContext.fillRect(
         body.x * this.state.gridSize,
         body.y * this.state.gridSize,
@@ -380,22 +456,38 @@ export default class Dual {
     });
 
     if (
-      this.state.playerPos.x === this.state.fruitPos.x &&
-      this.state.playerPos.y === this.state.fruitPos.y
+      this.state.player1.playerPos.x === this.state.fruitPos.x &&
+      this.state.player1.playerPos.y === this.state.fruitPos.y
+    ) {
+      console.log("hit");
+      this.updateFruit();
+      this.state.player1.tail++;
+      this.state.player1.score++;
+    }
+    if (
+      this.state.player2.playerPos.x === this.state.fruitPos.x &&
+      this.state.player2.playerPos.y === this.state.fruitPos.y
     ) {
       this.updateFruit();
-      this.state.tail++;
-      this.state.score++;
+      this.state.player2.tail++;
+      this.state.player2.score++;
     }
-    localStorage.setItem("score", this.state.score);
 
     // Displaying Score
     this.$canvasContext.font = "15pt Calibri";
     this.$canvasContext.lineWidth = 3;
     this.$canvasContext.fillStyle = "grey";
     this.$canvasContext.fillText(
-      "Score:" + localStorage.getItem("score"),
+      "player1:" + this.state.player1.score,
       10,
+      580
+    );
+
+    this.$canvasContext.lineWidth = 3;
+    this.$canvasContext.fillStyle = "grey";
+    this.$canvasContext.fillText(
+      "player2:" + this.state.player2.score,
+      1100,
       580
     );
 
