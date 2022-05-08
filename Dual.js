@@ -21,7 +21,6 @@ export default class Dual {
         x: 0,
         y: -1,
       },
-      score: 0,
       trail: [],
       tail: 5,
       velocity: {
@@ -35,7 +34,6 @@ export default class Dual {
         x: 79,
         y: 40,
       },
-      score: 0,
       trail: [],
       tail: 5,
       velocity: {
@@ -85,7 +83,7 @@ export default class Dual {
   p1KeyPress(event) {
     if (this.state.player1.isKeyPressed || this.isPaused) return;
     switch (event.key) {
-      case "ArrowUp":
+      case "w":
         event.preventDefault();
         this.state.player1.velocity.y !== 1
           ? this.setState({
@@ -97,7 +95,7 @@ export default class Dual {
           : null;
         this.state.player1.isKeyPressed = true;
         break;
-      case "ArrowDown":
+      case "s":
         event.preventDefault();
         this.state.player1.velocity.y !== -1
           ? this.setState({
@@ -106,7 +104,7 @@ export default class Dual {
           : null;
         this.state.player1.isKeyPressed = true;
         break;
-      case "ArrowLeft":
+      case "a":
         event.preventDefault();
         this.state.player1.velocity.x !== 1
           ? this.setState({
@@ -115,7 +113,7 @@ export default class Dual {
           : null;
         this.state.player1.isKeyPressed = true;
         break;
-      case "ArrowRight":
+      case "d":
         event.preventDefault();
         this.state.player1.velocity.x !== -1
           ? this.setState({
@@ -129,7 +127,7 @@ export default class Dual {
   p2KeyPress(event) {
     if (this.state.player2.isKeyPressed || this.isPaused) return;
     switch (event.key) {
-      case "w":
+      case "ArrowUp":
         event.preventDefault();
         this.state.player2.velocity.y !== 1
           ? this.setState({
@@ -141,7 +139,7 @@ export default class Dual {
           : null;
         this.state.player2.isKeyPressed = true;
         break;
-      case "s":
+      case "ArrowDown":
         event.preventDefault();
         this.state.player2.velocity.y !== -1
           ? this.setState({
@@ -150,7 +148,7 @@ export default class Dual {
           : null;
         this.state.player2.isKeyPressed = true;
         break;
-      case "a":
+      case "ArrowLeft":
         event.preventDefault();
         this.state.player2.velocity.x !== 1
           ? this.setState({
@@ -159,7 +157,7 @@ export default class Dual {
           : null;
         this.state.player2.isKeyPressed = true;
         break;
-      case "d":
+      case "ArrowRight":
         event.preventDefault();
         this.state.player2.velocity.x !== -1
           ? this.setState({
@@ -213,20 +211,18 @@ export default class Dual {
             x: 0,
             y: 1,
           },
-          score: 0,
           trail: [],
           tail: 5,
         },
         player2: {
           playerPos: {
             x: 79,
-            y: 39,
+            y: 40,
           },
           velocity: {
             x: 0,
             y: -1,
           },
-          score: 0,
           trail: [],
           tail: 5,
         },
@@ -249,20 +245,18 @@ export default class Dual {
             x: 0,
             y: 1,
           },
-          score: 0,
           trail: [],
           tail: 5,
         },
         player2: {
           playerPos: {
-            x: 39,
-            y: 80,
+            x: 79,
+            y: 40,
           },
           velocity: {
             x: 0,
             y: -1,
           },
-          score: 0,
           trail: [],
           tail: 5,
         },
@@ -295,45 +289,74 @@ export default class Dual {
 
   isGameOver() {
     // out of bound check
+
+    //player1 hits wall
+
     if (
       this.state.player1.playerPos.x < 0 ||
       this.state.player1.playerPos.x > this.state.tileCount.x - 1 ||
       this.state.player1.playerPos.y < 0 ||
-      this.state.player1.playerPos.y > this.state.tileCount.y - 1 ||
+      this.state.player1.playerPos.y > this.state.tileCount.y - 1
+    ) {
+      return "Player2 wins!";
+    }
+
+    //player2 hits wall
+    if (
       this.state.player2.playerPos.x < 0 ||
       this.state.player2.playerPos.x > this.state.tileCount.x - 1 ||
       this.state.player2.playerPos.y < 0 ||
       this.state.player2.playerPos.y > this.state.tileCount.y - 1
     ) {
-      console.log(this.state.player1);
-      console.log(this.state.player2);
-      return true;
+      return "Player1 wins!";
     }
 
     //collision check
+
+    //two heads collide
     if (
       this.state.player1.playerPos.x === this.state.player2.playerPos.x &&
       this.state.player1.playerPos.y === this.state.player2.playerPos.y
     )
-      return true;
+      return "Draw";
+
+    //player1 self-collide
     for (var i = 0; i < this.state.player1.trail.length - 1; i++) {
       if (
-        (this.state.player1.playerPos.x === this.state.player1.trail[i].x &&
-          this.state.player1.playerPos.y === this.state.player1.trail[i].y) ||
-        (this.state.player2.playerPos.x === this.state.player1.trail[i].x &&
-          this.state.player2.playerPos.y === this.state.player1.trail[i].y)
+        this.state.player1.playerPos.x === this.state.player1.trail[i].x &&
+        this.state.player1.playerPos.y === this.state.player1.trail[i].y
       ) {
-        return true;
+        return "Player2 wins!";
       }
     }
+
+    //player2 hits player1's body
+    for (var i = 0; i < this.state.player1.trail.length - 1; i++) {
+      if (
+        this.state.player2.playerPos.x === this.state.player1.trail[i].x &&
+        this.state.player2.playerPos.y === this.state.player1.trail[i].y
+      ) {
+        return "Player1 wins!";
+      }
+    }
+
+    //player2 self-collide
     for (var i = 0; i < this.state.player2.trail.length - 1; i++) {
       if (
-        (this.state.player2.playerPos.x === this.state.player2.trail[i].x &&
-          this.state.player2.playerPos.y === this.state.player2.trail[i].y) ||
-        (this.state.player1.playerPos.x === this.state.player2.trail[i].x &&
-          this.state.player1.playerPos.y === this.state.player2.trail[i].y)
+        this.state.player2.playerPos.x === this.state.player2.trail[i].x &&
+        this.state.player2.playerPos.y === this.state.player2.trail[i].y
       ) {
-        return true;
+        return "Player1 wins!";
+      }
+    }
+
+    //player1 hits player1's body
+    for (var i = 0; i < this.state.player2.trail.length - 1; i++) {
+      if (
+        this.state.player1.playerPos.x === this.state.player2.trail[i].x &&
+        this.state.player1.playerPos.y === this.state.player2.trail[i].y
+      ) {
+        return "Player2 wins!";
       }
     }
 
@@ -355,7 +378,8 @@ export default class Dual {
     this.state.player1.isKeyPressed = false;
     this.state.player2.isKeyPressed = false;
 
-    if (this.isGameOver()) {
+    const result = this.isGameOver();
+    if (result) {
       this.onGameState = false;
 
       const overlay = document.createElement("div");
@@ -365,7 +389,7 @@ export default class Dual {
       modal.classList = "modal";
 
       modal.innerHTML = `
-            <h1>You died</h1>
+            <h1>${result}</h1>
             <span class="btn exit">Exit</span>
           `;
 
@@ -381,7 +405,6 @@ export default class Dual {
               x: 0,
               y: -1,
             },
-            score: 0,
             trail: [],
             tail: 5,
             velocity: {
@@ -394,7 +417,6 @@ export default class Dual {
               x: 79,
               y: 40,
             },
-            score: 0,
             trail: [],
             tail: 5,
             velocity: {
@@ -462,7 +484,6 @@ export default class Dual {
       console.log("hit");
       this.updateFruit();
       this.state.player1.tail++;
-      this.state.player1.score++;
     }
     if (
       this.state.player2.playerPos.x === this.state.fruitPos.x &&
@@ -470,26 +491,7 @@ export default class Dual {
     ) {
       this.updateFruit();
       this.state.player2.tail++;
-      this.state.player2.score++;
     }
-
-    // Displaying Score
-    this.$canvasContext.font = "15pt Calibri";
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText(
-      "player1:" + this.state.player1.score,
-      10,
-      580
-    );
-
-    this.$canvasContext.lineWidth = 3;
-    this.$canvasContext.fillStyle = "grey";
-    this.$canvasContext.fillText(
-      "player2:" + this.state.player2.score,
-      1100,
-      580
-    );
 
     this.$canvasContext.fillStyle = "red";
     this.$canvasContext.fillRect(
