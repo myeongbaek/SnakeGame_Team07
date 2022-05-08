@@ -219,6 +219,8 @@ export default class Game {
     this.isKeyPressed = false;
 
     if (this.isGameOver()) {
+      removeev;
+      this.isPaused = true;
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
 
