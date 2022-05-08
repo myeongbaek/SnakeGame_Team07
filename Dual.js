@@ -51,7 +51,6 @@ export default class Dual {
   constructor({ $target, renderMain }) {
     this.$target = $target;
     this.renderMain = renderMain;
-    console.log(this.state.fruits);
   }
 
   setState(nextState) {
@@ -553,18 +552,14 @@ export default class Dual {
     }
 
     this.$canvasContext.fillStyle = "red";
-    this.$canvasContext.fillRect(
-      this.state.fruits[0].x * this.state.gridSize,
-      this.state.fruits[0].y * this.state.gridSize,
-      this.state.gridSize - 2,
-      this.state.gridSize - 2
-    );
-    this.$canvasContext.fillRect(
-      this.state.fruits[1].x * this.state.gridSize,
-      this.state.fruits[1].y * this.state.gridSize,
-      this.state.gridSize - 2,
-      this.state.gridSize - 2
-    );
+    this.state.fruits.forEach((fruit) => {
+      this.$canvasContext.fillRect(
+        fruit.x * this.state.gridSize,
+        fruit.y * this.state.gridSize,
+        this.state.gridSize - 2,
+        this.state.gridSize - 2
+      );
+    });
   }
 
   gameLoop() {
