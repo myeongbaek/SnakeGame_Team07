@@ -18,6 +18,7 @@ export default class MainScreen {
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
         <span class="start btn">Start</span>
+        <span class="amode btn">Auto Play</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
         <span class="btn">Exit</span>
@@ -27,11 +28,19 @@ export default class MainScreen {
 
     //Start
     const onStartClick = () => {
-      this.game.setUp();
+      this.game.setUp("default");
       this.game.gameLoop();
     };
     const startBtn = this.$screen.querySelector(".start");
     startBtn.addEventListener("click", onStartClick);
+
+    //AutoMode
+    const onAutoModeClick = () => {
+      this.game.setUp("aimode");
+      this.game.gameLoop();
+    };
+    const automodeBtn = this.$screen.querySelector(".amode");
+    automodeBtn.addEventListener("click", onAutoModeClick);
 
     //Load
     const onLoadClick = () => {

@@ -11,6 +11,9 @@ export default class Game {
   onGameState = false;
   renderMain;
 
+  mode = "default";
+
+
   state = {
     playerPos: {
       x: 20,
@@ -39,17 +42,19 @@ export default class Game {
       ...nextState,
     };
   }
-  setUp() {
+  setUp(mode) {
     this.$target.innerHTML = `
         <canvas id="canvas" width="600" height="600"></canvas>
     `;
     this.$canvas = document.getElementById("canvas");
     this.$canvasContext = this.$canvas.getContext("2d");
     addEventListener("keydown", (event) => this.keyPress(event));
+
+    this.mode = mode;
   }
 
   keyPress(event) {
-    if (this.isKeyPressed || this.isPaused) return;
+    if (this.isKeyPressed || this.isPaused || this.mode == "aimode") return;
     switch (event.key) {
       case "ArrowUp":
         this.state.velocity.y !== 1
@@ -171,7 +176,27 @@ export default class Game {
     });
   }
 
-  move() {
+  move(mode) {
+    if (mode == "aimode") {
+      if (this.state.playerPos.x > this.state.fruitPos.x)
+        this.state.velocity.x !== 1
+          ? this.setState({ velocity: { x: -1, y: 0 } })
+          : null;
+      else if (this.state.playerPos.x < this.state.fruitPos.x)
+        this.state.velocity.x !== -1
+          ? this.setState({ velocity: { x: 1, y: 0 } })
+          : null;
+      else if (this.state.playerPos.y > this.state.fruitPos.y)
+        this.state.velocity.y !== -1
+          ? this.setState({ velocity: { x: 0, y: -1 } })
+          : null;
+      else if (this.state.playerPos.y < this.state.fruitPos.y)
+        this.state.velocity.y !== 1
+          ? this.setState({ velocity: { x: 0, y: 1 } })
+          : null;
+      // when the fruit appears behind of the snake the game will be stopped
+    }
+
     this.setState({
       ...this.state,
       playerPos: {
@@ -179,6 +204,8 @@ export default class Game {
         y: this.state.playerPos.y + this.state.velocity.y,
       },
     });
+
+
   }
 
   isGameOver() {
@@ -189,6 +216,8 @@ export default class Game {
       this.state.playerPos.y < 0 ||
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
+      console.log("die : boundary collide");
+      console.log(this.state.fruitPos, this.state.playerPos);
       return true;
     }
 
@@ -198,6 +227,8 @@ export default class Game {
         this.state.playerPos.x === this.state.trail[i].x &&
         this.state.playerPos.y === this.state.trail[i].y
       ) {
+        console.log("die : self-eating");
+        console.log(this.state.fruitPos, this.state.playerPos);
         return true;
       }
     }
@@ -212,12 +243,15 @@ export default class Game {
   }
 
   render() {
-    this.move();
+    this.move(this.mode);
     this.isKeyPressed = false;
 
+    // game overstate
     if (this.isGameOver()) {
+
       this.onGameState = false;
       localStorage.removeItem("state");
+
 
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
@@ -311,6 +345,7 @@ export default class Game {
 
     while (this.state.trail.length > this.state.tail) this.state.trail.shift();
 
+    // fill the snake move with lime colour
     this.$canvasContext.fillStyle = "lime";
     this.state.trail.forEach((body) => {
       this.$canvasContext.fillRect(
@@ -321,6 +356,7 @@ export default class Game {
       );
     });
 
+    // snake bite the fruit => update the fruit location
     if (
       this.state.playerPos.x === this.state.fruitPos.x &&
       this.state.playerPos.y === this.state.fruitPos.y
@@ -355,6 +391,6 @@ export default class Game {
 
     this.intervalId = setInterval(() => {
       this.render();
-    }, 1000 / 15);
+    }, 1000 / 200);
   }
 }
