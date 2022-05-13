@@ -217,7 +217,7 @@ export default class Game {
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
       console.log("die : boundary collide");
-      console.log(this.state.fruitPos, this.state.playerPos);
+      console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
       return true;
     }
 
@@ -228,7 +228,7 @@ export default class Game {
         this.state.playerPos.y === this.state.trail[i].y
       ) {
         console.log("die : self-eating");
-        console.log(this.state.fruitPos, this.state.playerPos);
+        console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
         return true;
       }
     }
@@ -252,14 +252,33 @@ export default class Game {
       this.onGameState = false;
       localStorage.removeItem("state");
 
+      if (this.mode === "aimode") {
+        this.setState({
+          playerPos: {
+            x: 20,
+            y: 20,
+          },
+          score: 0,
+          gridSize: 15,
+          tileCount: 40,
+          trail: [],
+          tail: 5,
+          velocity: {
+            x: 0,
+            y: -1,
+          },
+          fruitPos: GenerateFruitPosition([], this.state.tileCount),
+        });
+      }
+      else {
 
-      const overlay = document.createElement("div");
-      overlay.classList = "overlay";
+        const overlay = document.createElement("div");
+        overlay.classList = "overlay";
 
-      const modal = document.createElement("div");
-      modal.classList = "modal";
+        const modal = document.createElement("div");
+        modal.classList = "modal";
 
-      modal.innerHTML = `
+        modal.innerHTML = `
             <h1>You died</h1>
             <span class="score">Score : ${this.state.score}</span>
             <form>
@@ -270,69 +289,70 @@ export default class Game {
             <span class="btn exit">Exit</span>
           `;
 
-      overlay.appendChild(modal);
-      this.$target.appendChild(overlay);
+        overlay.appendChild(modal);
+        this.$target.appendChild(overlay);
 
-      const isBntOnClick = (event) => {
-        event.preventDefault();
-        const rankData = { username: username.value, score: this.state.score };
-        let savedData = JSON.parse(localStorage.getItem("rankData"));
-        savedData === null ? (savedData = []) : savedData;
+        const isBntOnClick = (event) => {
+          event.preventDefault();
+          const rankData = { username: username.value, score: this.state.score };
+          let savedData = JSON.parse(localStorage.getItem("rankData"));
+          savedData === null ? (savedData = []) : savedData;
 
-        savedData.push(rankData);
-        savedData.sort(CompareRank);
-        if (savedData.length > 10) {
-          savedData.pop();
-        }
-        localStorage.setItem("rankData", JSON.stringify(savedData));
-        // only 1~10 scores are saved to local storage
+          savedData.push(rankData);
+          savedData.sort(CompareRank);
+          if (savedData.length > 10) {
+            savedData.pop();
+          }
+          localStorage.setItem("rankData", JSON.stringify(savedData));
+          // only 1~10 scores are saved to local storage
 
-        this.setState({
-          playerPos: {
-            x: 20,
-            y: 20,
-          },
-          score: 0,
-          gridSize: 15,
-          tileCount: 40,
-          trail: [],
-          tail: 5,
-          velocity: {
-            x: 0,
-            y: -1,
-          },
-          fruitPos: GenerateFruitPosition([], this.state.tileCount),
+          this.setState({
+            playerPos: {
+              x: 20,
+              y: 20,
+            },
+            score: 0,
+            gridSize: 15,
+            tileCount: 40,
+            trail: [],
+            tail: 5,
+            velocity: {
+              x: 0,
+              y: -1,
+            },
+            fruitPos: GenerateFruitPosition([], this.state.tileCount),
+          });
+          return this.renderMain();
+        };
+        const username = document.getElementById("UserName");
+        const userform = document.querySelector("form");
+        userform.addEventListener("submit", (event) => isBntOnClick(event));
+
+        const exit = this.$target.querySelector(".exit");
+        exit.addEventListener("click", () => {
+          this.isPaused = false;
+          this.setState({
+            playerPos: {
+              x: 20,
+              y: 20,
+            },
+            score: 0,
+            gridSize: 15,
+            tileCount: 40,
+            trail: [],
+            tail: 5,
+            velocity: {
+              x: 0,
+              y: -1,
+            },
+            fruitPos: GenerateFruitPosition([], this.state.tileCount),
+          });
+          clearInterval(this.intervalId);
+          this.renderMain();
         });
-        return this.renderMain();
-      };
-      const username = document.getElementById("UserName");
-      const userform = document.querySelector("form");
-      userform.addEventListener("submit", (event) => isBntOnClick(event));
 
-      const exit = this.$target.querySelector(".exit");
-      exit.addEventListener("click", () => {
-        this.isPaused = false;
-        this.setState({
-          playerPos: {
-            x: 20,
-            y: 20,
-          },
-          score: 0,
-          gridSize: 15,
-          tileCount: 40,
-          trail: [],
-          tail: 5,
-          velocity: {
-            x: 0,
-            y: -1,
-          },
-          fruitPos: GenerateFruitPosition([], this.state.tileCount),
-        });
         clearInterval(this.intervalId);
-        this.renderMain();
-      });
-
-      clearInterval(this.intervalId);
+      }
     }
 
     this.$canvasContext.fillStyle = "black";
