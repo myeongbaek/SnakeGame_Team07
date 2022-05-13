@@ -12,6 +12,8 @@ export default class Game {
   renderMain;
 
   mode = "default";
+  trials = 100;
+  score_sum = 0;
 
 
   state = {
@@ -252,7 +254,10 @@ export default class Game {
       this.onGameState = false;
       localStorage.removeItem("state");
 
-      if (this.mode === "aimode") {
+      this.trials = this.trials - 1;
+      this.score_sum = this.score_sum + this.state.score;
+
+      if (this.mode === "aimode" && this.trials > 0) {
         this.setState({
           playerPos: {
             x: 20,
@@ -271,6 +276,8 @@ export default class Game {
         });
       }
       else {
+
+        console.log(this.score_sum / 100);
 
         const overlay = document.createElement("div");
         overlay.classList = "overlay";
