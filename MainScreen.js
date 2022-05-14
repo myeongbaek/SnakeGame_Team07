@@ -1,3 +1,4 @@
+import AutoGreedy from "./AutoPlay_greedy.js";
 import Game from "./Game.js";
 
 export default class MainScreen {
@@ -10,6 +11,7 @@ export default class MainScreen {
     this.$screen = document.createElement("div");
     this.$screen.classList = "box";
     this.game = new Game({ $target, renderMain: this.render });
+    this.autoPlay = new AutoGreedy({ $target, renderMain: this.render });
 
     this.render();
   }
@@ -18,7 +20,7 @@ export default class MainScreen {
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
         <span class="start btn">Start</span>
-        <span class="amode btn">Auto Play</span>
+        <span class="auto btn">Auto Play</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
         <span class="btn">Exit</span>
@@ -28,7 +30,7 @@ export default class MainScreen {
 
     //Start
     const onStartClick = () => {
-      this.game.setUp("default");
+      this.game.setUp();
       this.game.gameLoop();
     };
     const startBtn = this.$screen.querySelector(".start");
@@ -36,10 +38,10 @@ export default class MainScreen {
 
     //AutoMode
     const onAutoModeClick = () => {
-      this.game.setUp("aimode");
-      this.game.gameLoop();
+      this.autoPlay.setUp();
+      this.autoPlay.gameLoop();
     };
-    const automodeBtn = this.$screen.querySelector(".amode");
+    const automodeBtn = this.$screen.querySelector(".auto");
     automodeBtn.addEventListener("click", onAutoModeClick);
 
     //Load
