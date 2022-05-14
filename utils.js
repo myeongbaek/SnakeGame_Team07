@@ -17,3 +17,12 @@ export function GenerateFruitPosition(trail, tileCount) {
 export function CompareRank(r1, r2) {
   return r2.score - r1.score;
 }
+
+
+export function towDimensionArray(m, n) {
+  let arr = new Array(m); // create an empty array of length n
+  for (var i = 0; i < m; i++) {
+    arr[i] = new Array(n); // make each element an array
+  }
+  return arr;
+}

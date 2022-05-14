@@ -11,10 +11,6 @@ export default class Game {
   onGameState = false;
   renderMain;
 
-  mode = "default";
-  trials = 100;
-  score_sum = 0;
-
 
   state = {
     playerPos: {
@@ -44,7 +40,7 @@ export default class Game {
       ...nextState,
     };
   }
-  setUp(mode) {
+  setUp() {
     this.$target.innerHTML = `
         <canvas id="canvas" width="600" height="600"></canvas>
     `;
@@ -52,11 +48,10 @@ export default class Game {
     this.$canvasContext = this.$canvas.getContext("2d");
     addEventListener("keydown", (event) => this.keyPress(event));
 
-    this.mode = mode;
   }
 
   keyPress(event) {
-    if (this.isKeyPressed || this.isPaused || this.mode == "aimode") return;
+    if (this.isKeyPressed || this.isPaused) return;
     switch (event.key) {
       case "ArrowUp":
         this.state.velocity.y !== 1
@@ -178,27 +173,7 @@ export default class Game {
     });
   }
 
-  move(mode) {
-    if (mode == "aimode") {
-      if (this.state.playerPos.x > this.state.fruitPos.x)
-        this.state.velocity.x !== 1
-          ? this.setState({ velocity: { x: -1, y: 0 } })
-          : null;
-      else if (this.state.playerPos.x < this.state.fruitPos.x)
-        this.state.velocity.x !== -1
-          ? this.setState({ velocity: { x: 1, y: 0 } })
-          : null;
-      else if (this.state.playerPos.y > this.state.fruitPos.y)
-        this.state.velocity.y !== -1
-          ? this.setState({ velocity: { x: 0, y: -1 } })
-          : null;
-      else if (this.state.playerPos.y < this.state.fruitPos.y)
-        this.state.velocity.y !== 1
-          ? this.setState({ velocity: { x: 0, y: 1 } })
-          : null;
-      // when the fruit appears behind of the snake the game will be stopped
-    }
-
+  move() {
     this.setState({
       ...this.state,
       playerPos: {
@@ -218,8 +193,6 @@ export default class Game {
       this.state.playerPos.y < 0 ||
       this.state.playerPos.y > this.state.tileCount - 1
     ) {
-      console.log("die : boundary collide");
-      console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
       return true;
     }
 
@@ -229,8 +202,6 @@ export default class Game {
         this.state.playerPos.x === this.state.trail[i].x &&
         this.state.playerPos.y === this.state.trail[i].y
       ) {
-        console.log("die : self-eating");
-        console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
         return true;
       }
     }
@@ -245,7 +216,7 @@ export default class Game {
   }
 
   render() {
-    this.move(this.mode);
+    this.move();
     this.isKeyPressed = false;
 
     // game overstate
@@ -254,10 +225,41 @@ export default class Game {
       this.onGameState = false;
       localStorage.removeItem("state");
 
-      this.trials = this.trials - 1;
-      this.score_sum = this.score_sum + this.state.score;
 
-      if (this.mode === "aimode" && this.trials > 0) {
+      const overlay = document.createElement("div");
+      overlay.classList = "overlay";
+
+      const modal = document.createElement("div");
+      modal.classList = "modal";
+
+      modal.innerHTML = `
+            <h1>You died</h1>
+            <span class="score">Score : ${this.state.score}</span>
+            <form>
+            <input type="text" id="UserName" placeholder="username"></input>
+            <button>-></button>
+            </form>
+            
+            <span class="btn exit">Exit</span>
+          `;
+
+      overlay.appendChild(modal);
+      this.$target.appendChild(overlay);
+
+      const isBntOnClick = (event) => {
+        event.preventDefault();
+        const rankData = { username: username.value, score: this.state.score };
+        let savedData = JSON.parse(localStorage.getItem("rankData"));
+        savedData === null ? (savedData = []) : savedData;
+
+        savedData.push(rankData);
+        savedData.sort(CompareRank);
+        if (savedData.length > 10) {
+          savedData.pop();
+        }
+        localStorage.setItem("rankData", JSON.stringify(savedData));
+        // only 1~10 scores are saved to local storage
+
         this.setState({
           playerPos: {
             x: 20,
@@ -274,92 +276,37 @@ export default class Game {
           },
           fruitPos: GenerateFruitPosition([], this.state.tileCount),
         });
-      }
-      else {
+        return this.renderMain();
+      };
+      const username = document.getElementById("UserName");
+      const userform = document.querySelector("form");
+      userform.addEventListener("submit", (event) => isBntOnClick(event));
 
-        console.log(this.score_sum / 100);
-
-        const overlay = document.createElement("div");
-        overlay.classList = "overlay";
-
-        const modal = document.createElement("div");
-        modal.classList = "modal";
-
-        modal.innerHTML = `
-            <h1>You died</h1>
-            <span class="score">Score : ${this.state.score}</span>
-            <form>
-            <input type="text" id="UserName" placeholder="username"></input>
-            <button>-></button>
-            </form>
-            
-            <span class="btn exit">Exit</span>
-          `;
-
-        overlay.appendChild(modal);
-        this.$target.appendChild(overlay);
-
-        const isBntOnClick = (event) => {
-          event.preventDefault();
-          const rankData = { username: username.value, score: this.state.score };
-          let savedData = JSON.parse(localStorage.getItem("rankData"));
-          savedData === null ? (savedData = []) : savedData;
-
-          savedData.push(rankData);
-          savedData.sort(CompareRank);
-          if (savedData.length > 10) {
-            savedData.pop();
-          }
-          localStorage.setItem("rankData", JSON.stringify(savedData));
-          // only 1~10 scores are saved to local storage
-
-          this.setState({
-            playerPos: {
-              x: 20,
-              y: 20,
-            },
-            score: 0,
-            gridSize: 15,
-            tileCount: 40,
-            trail: [],
-            tail: 5,
-            velocity: {
-              x: 0,
-              y: -1,
-            },
-            fruitPos: GenerateFruitPosition([], this.state.tileCount),
-          });
-          return this.renderMain();
-        };
-        const username = document.getElementById("UserName");
-        const userform = document.querySelector("form");
-        userform.addEventListener("submit", (event) => isBntOnClick(event));
-
-        const exit = this.$target.querySelector(".exit");
-        exit.addEventListener("click", () => {
-          this.isPaused = false;
-          this.setState({
-            playerPos: {
-              x: 20,
-              y: 20,
-            },
-            score: 0,
-            gridSize: 15,
-            tileCount: 40,
-            trail: [],
-            tail: 5,
-            velocity: {
-              x: 0,
-              y: -1,
-            },
-            fruitPos: GenerateFruitPosition([], this.state.tileCount),
-          });
-          clearInterval(this.intervalId);
-          this.renderMain();
+      const exit = this.$target.querySelector(".exit");
+      exit.addEventListener("click", () => {
+        this.isPaused = false;
+        this.setState({
+          playerPos: {
+            x: 20,
+            y: 20,
+          },
+          score: 0,
+          gridSize: 15,
+          tileCount: 40,
+          trail: [],
+          tail: 5,
+          velocity: {
+            x: 0,
+            y: -1,
+          },
+          fruitPos: GenerateFruitPosition([], this.state.tileCount),
         });
-
         clearInterval(this.intervalId);
-      }
+        this.renderMain();
+      });
+
+      clearInterval(this.intervalId);
+
     }
 
     this.$canvasContext.fillStyle = "black";
@@ -418,6 +365,6 @@ export default class Game {
 
     this.intervalId = setInterval(() => {
       this.render();
-    }, 1000 / 200);
+    }, 1000 / 15);
   }
 }
