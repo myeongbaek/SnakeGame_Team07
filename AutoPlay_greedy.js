@@ -7,11 +7,10 @@ export default class AutoGreedy {
 
     intervalId;
     isPaused = false;
-    //isKeyPressed = false;
     onGameState = false;
     renderMain;
 
-    trials = 100;
+    trials = 1;
     score_sum = 0;
 
     state = {
@@ -53,32 +52,8 @@ export default class AutoGreedy {
     }
 
     keyPress(event) {
-        if (this.isKeyPressed || this.isPaused) return;
+        if (this.isPaused) return;
         switch (event.key) {
-            case "ArrowUp":
-                this.state.velocity.y !== 1
-                    ? this.setState({ velocity: { x: 0, y: -1 } })
-                    : null;
-                this.isKeyPressed = true;
-                break;
-            case "ArrowDown":
-                this.state.velocity.y !== -1
-                    ? this.setState({ velocity: { x: 0, y: 1 } })
-                    : null;
-                this.isKeyPressed = true;
-                break;
-            case "ArrowLeft":
-                this.state.velocity.x !== 1
-                    ? this.setState({ velocity: { x: -1, y: 0 } })
-                    : null;
-                this.isKeyPressed = true;
-                break;
-            case "ArrowRight":
-                this.state.velocity.x !== -1
-                    ? this.setState({ velocity: { x: 1, y: 0 } })
-                    : null;
-                this.isKeyPressed = true;
-                break;
             case "Escape":
                 if (this.onGameState) {
                     clearInterval(this.intervalId);
@@ -102,7 +77,6 @@ export default class AutoGreedy {
         <h1>Pause</h1>
         <span class="btn resume">Resume</span>
         <span class="btn restart">Restart</span>
-        <span class="btn save">Save</span>
         <span class="btn exit">Exit</span>
       `;
 
@@ -130,25 +104,6 @@ export default class AutoGreedy {
                 tail: 5,
             });
             this.gameLoop();
-        });
-
-        const save = this.$target.querySelector(".save");
-        save.addEventListener("click", () => {
-            this.isPaused = false;
-            this.$target.removeChild(overlay);
-            clearInterval(this.intervalId);
-            localStorage.setItem("state", JSON.stringify(this.state));
-            this.setState({
-                ...this.state,
-                score: 0,
-                playerPos: { x: 20, y: 20 },
-                fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                velocity: { x: 0, y: -1 },
-                trail: [],
-                tail: 5,
-            });
-            clearInterval(this.intervalId);
-            this.renderMain();
         });
 
         const exit = this.$target.querySelector(".exit");
@@ -243,7 +198,8 @@ export default class AutoGreedy {
 
     render() {
         this.move();
-        //this.isKeyPressed = false;
+        this.onGameState = true;
+
 
         // game overstate
         if (this.isGameOver()) {
@@ -274,63 +230,18 @@ export default class AutoGreedy {
             }
             else {
 
-                console.log(this.score_sum / 100);
-
                 const overlay = document.createElement("div");
-                overlay.classList = "overlay";
-
                 const modal = document.createElement("div");
+                overlay.classList = "overlay";
                 modal.classList = "modal";
-
                 modal.innerHTML = `
-            <h1>You died</h1>
-            <span class="score">Score : ${this.state.score}</span>
-            <form>
-            <input type="text" id="UserName" placeholder="username"></input>
-            <button>-></button>
-            </form>
-            
-            <span class="btn exit">Exit</span>
-          `;
-
+                    <h1>You died</h1>
+                    <span class="score">Score : ${this.state.score}</span>                
+                    <span class="btn exit">Exit</span>
+                `;
                 overlay.appendChild(modal);
                 this.$target.appendChild(overlay);
 
-                const isBntOnClick = (event) => {
-                    event.preventDefault();
-                    const rankData = { username: username.value, score: this.state.score };
-                    let savedData = JSON.parse(localStorage.getItem("rankData"));
-                    savedData === null ? (savedData = []) : savedData;
-
-                    savedData.push(rankData);
-                    savedData.sort(CompareRank);
-                    if (savedData.length > 10) {
-                        savedData.pop();
-                    }
-                    localStorage.setItem("rankData", JSON.stringify(savedData));
-                    // only 1~10 scores are saved to local storage
-
-                    this.setState({
-                        playerPos: {
-                            x: 20,
-                            y: 20,
-                        },
-                        score: 0,
-                        gridSize: 15,
-                        tileCount: 40,
-                        trail: [],
-                        tail: 5,
-                        velocity: {
-                            x: 0,
-                            y: -1,
-                        },
-                        fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                    });
-                    return this.renderMain();
-                };
-                const username = document.getElementById("UserName");
-                const userform = document.querySelector("form");
-                userform.addEventListener("submit", (event) => isBntOnClick(event));
 
                 const exit = this.$target.querySelector(".exit");
                 exit.addEventListener("click", () => {
@@ -359,15 +270,9 @@ export default class AutoGreedy {
             }
         }
 
+        // canvas style
         this.$canvasContext.fillStyle = "black";
         this.$canvasContext.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
-
-        this.state.trail.push({
-            x: this.state.playerPos.x,
-            y: this.state.playerPos.y,
-        });
-
-        while (this.state.trail.length > this.state.tail) this.state.trail.shift();
 
         // fill the snake move with lime colour
         this.$canvasContext.fillStyle = "lime";
@@ -379,6 +284,14 @@ export default class AutoGreedy {
                 this.state.gridSize - 2
             );
         });
+
+        // snake head location 
+        this.state.trail.push({
+            x: this.state.playerPos.x,
+            y: this.state.playerPos.y,
+        });
+
+        while (this.state.trail.length > this.state.tail) this.state.trail.shift();
 
         // snake bite the fruit => update the fruit location
         if (
@@ -411,8 +324,6 @@ export default class AutoGreedy {
     }
 
     gameLoop() {
-        this.onGameState = true;
-
         this.intervalId = setInterval(() => {
             this.render();
         }, 1000 / 200);
