@@ -1,4 +1,4 @@
-import { CompareRank, GenerateFruitPosition } from "./utils.js";
+import { CompareRank, GenerateFruitPosition, twoDimensionArray } from "./utils.js";
 
 export default class AutoGreedy {
     $target;
@@ -12,6 +12,9 @@ export default class AutoGreedy {
 
     trials = 1;
     score_sum = 0;
+
+
+
 
     state = {
         playerPos: {
@@ -302,14 +305,13 @@ export default class AutoGreedy {
             this.state.tail++;
             this.state.score++;
         }
-        localStorage.setItem("score", this.state.score);
 
         // Displaying Score
         this.$canvasContext.font = "15pt Calibri";
         this.$canvasContext.lineWidth = 3;
         this.$canvasContext.fillStyle = "grey";
         this.$canvasContext.fillText(
-            "Score:" + localStorage.getItem("score"),
+            "Score:" + this.state.score,
             10,
             580
         );

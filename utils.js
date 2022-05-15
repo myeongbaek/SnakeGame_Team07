@@ -19,7 +19,7 @@ export function CompareRank(r1, r2) {
 }
 
 
-export function towDimensionArray(m, n) {
+export function twoDimensionArray(m, n) {
   let arr = new Array(m); // create an empty array of length n
   for (var i = 0; i < m; i++) {
     arr[i] = new Array(n); // make each element an array
