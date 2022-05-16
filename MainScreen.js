@@ -5,6 +5,7 @@ export default class MainScreen {
   $target;
   $screen;
   game;
+  autoPlay;
   constructor({ $target }) {
     this.$target = $target;
 

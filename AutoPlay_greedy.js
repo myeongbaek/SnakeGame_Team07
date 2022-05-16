@@ -1,4 +1,5 @@
-import { CompareRank, GenerateFruitPosition, twoDimensionArray } from "./utils.js";
+import { GenerateFruitPosition } from "./utils.js";
+
 
 export default class AutoGreedy {
     $target;
@@ -135,25 +136,26 @@ export default class AutoGreedy {
 
     move() {
 
-        if (this.state.playerPos.x > this.state.fruitPos.x)
-            this.state.velocity.x !== 1
-                ? this.setState({ velocity: { x: -1, y: 0 } })
-                : null;
-        else if (this.state.playerPos.x < this.state.fruitPos.x)
-            this.state.velocity.x !== -1
-                ? this.setState({ velocity: { x: 1, y: 0 } })
-                : null;
-        else if (this.state.playerPos.y > this.state.fruitPos.y)
-            this.state.velocity.y !== -1
-                ? this.setState({ velocity: { x: 0, y: -1 } })
-                : null;
-        else if (this.state.playerPos.y < this.state.fruitPos.y)
-            this.state.velocity.y !== 1
-                ? this.setState({ velocity: { x: 0, y: 1 } })
-                : null;
+        // if (this.state.playerPos.x > this.state.fruitPos.x)
+        //     this.state.velocity.x !== 1
+        //         ? this.setState({ velocity: { x: -1, y: 0 } })
+        //         : null;
+        // else if (this.state.playerPos.x < this.state.fruitPos.x)
+        //     this.state.velocity.x !== -1
+        //         ? this.setState({ velocity: { x: 1, y: 0 } })
+        //         : null;
+        // else if (this.state.playerPos.y > this.state.fruitPos.y)
+        //     this.state.velocity.y !== -1
+        //         ? this.setState({ velocity: { x: 0, y: -1 } })
+        //         : null;
+        // else if (this.state.playerPos.y < this.state.fruitPos.y)
+        //     this.state.velocity.y !== 1
+        //         ? this.setState({ velocity: { x: 0, y: 1 } })
+        //         : null;
         // when the fruit appears behind of the snake the game will be stopped
+        var direction = getGreedyDirection(this.state.playerPos.x, this.state.playerPos.y, this.state.fruitPos.x, this.state.fruitPos.y, this.state.trail.this.state.velocity);
 
-
+        this.setState({ velocity: direction });
         this.setState({
             ...this.state,
             playerPos: {
@@ -161,6 +163,7 @@ export default class AutoGreedy {
                 y: this.state.playerPos.y + this.state.velocity.y,
             },
         });
+
 
 
     }
