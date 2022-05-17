@@ -129,8 +129,30 @@ export default class Auto {
             this.renderMain();
         });
     }
-
     move() {
+
+//if (this.state.fruitPos.y<39&&this.state.fruitPos.y>0){
+
+        if (this.state.playerPos.y > this.state.fruitPos.y) {
+            this.state.velocity.y !== 1
+                ? this.setState({velocity: {x: 0, y: -1}})
+                : null;
+        }
+        if (this.state.playerPos.y < this.state.fruitPos.y) {
+            this.state.velocity.y !== -1
+                ? this.setState({velocity: {x: 0, y: 1}})
+                : null;
+        }
+        if (this.state.playerPos.x < this.state.fruitPos.x) {
+            this.state.velocity.x !== -1
+                ? this.setState({velocity: {x: 1, y: 0}})
+                : null;
+        }
+        if (this.state.playerPos.x > this.state.fruitPos.x) {
+            this.state.velocity.x !== 1
+                ? this.setState({velocity: {x: -1, y: 0}})
+                : null;
+        }
         this.setState({
             ...this.state,
             playerPos: {
@@ -138,82 +160,6 @@ export default class Auto {
                 y: this.state.playerPos.y + this.state.velocity.y,
             },
         });
-
-      if(this.state.velocity.y !== 1&&this.state.tileCount!==this.state.fruitPos.x){
-          if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y > this.state.fruitPos.y){
-              this.setState({ velocity: { x: 0, y: -1 } })
-          }
-          if (this.state.playerPos.x > this.state.fruitPos.x&& this.state.playerPos.y === this.state.fruitPos.y){
-              this.setState({ velocity: { x: -1, y: 0 } })
-          }
-        }
-
-
-
-
-        if(this.state.velocity.x !== -1) {//right
-//up left
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y > this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: -1}})
-            }
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: -1, y: 0}})
-            }
-            //up right
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y > this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: -1}})
-            }
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: 1, y: 0}})
-            }
-//down right
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y < this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: 1}})
-            }
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: 1, y: 0}})
-            }
-            //down left
-
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y < this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: 1}})
-            }
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: -1, y: 0}})
-            }
-        }
-        if(this.state.velocity.x !== 1) {//left
-//up left
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y > this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: -1}})
-            }
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: -1, y: 0}})
-            }
-            //up right
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y > this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: -1}})
-            }
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: 1, y: 0}})
-            }
-//down right
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y < this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: 1}})
-            }
-            if (this.state.playerPos.x < this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: 1, y: 0}})
-            }
-            //down left
-
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y < this.state.fruitPos.y) {
-                this.setState({velocity: {x: 0, y: 1}})
-            }
-            if (this.state.playerPos.x > this.state.fruitPos.x && this.state.playerPos.y === this.state.fruitPos.y) {
-                this.setState({velocity: {x: -1, y: 0}})
-            }
-        }
-
     }
 
     isGameOver() {
@@ -384,6 +330,6 @@ export default class Auto {
 
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 100);
+        }, 1000 / 500);
     }
 }
