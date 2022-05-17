@@ -1,23 +1,26 @@
 import Game from "./Game.js";
-
+import Auto from "./Auto.js";
 export default class MainScreen {
   $target;
   $screen;
   game;
+  auto;
   constructor({ $target }) {
     this.$target = $target;
 
     this.$screen = document.createElement("div");
     this.$screen.classList = "box";
     this.game = new Game({ $target, renderMain: this.render });
-
+    this.auto = new Auto({$target, renderMain: this.render });
     this.render();
   }
 
   render = () => {
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
-        <span class="start btn">Start</span>
+        <span class="single play btn">Single play</span>
+        <span class="dual play btn">Dual play</span>
+        <span class="auto play btn">Auto play</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
         <span class="btn">Exit</span>
@@ -25,13 +28,29 @@ export default class MainScreen {
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
 
-    //Start
-    const onStartClick = () => {
+    //Single play
+    const onSinglePlayBtnClick = () => {
       this.game.setUp();
       this.game.gameLoop();
     };
-    const startBtn = this.$screen.querySelector(".start");
-    startBtn.addEventListener("click", onStartClick);
+    const singlePlayBtn = this.$screen.querySelector(".single");
+    singlePlayBtn.addEventListener("click", onSinglePlayBtnClick);
+
+    //Dual play
+    const onDualPlayBtnClick = () => {
+      this.game.setUp();
+      this.game.gameLoop();
+    };
+    const dualPlayBtn = this.$screen.querySelector(".dual");
+    dualPlayBtn.addEventListener("click", onDualPlayBtnClick);
+
+//Auto play
+    const onAutoPlayBtnClick = () => {
+      this.auto.setUp();
+      this.auto.gameLoop();
+    };
+    const autoPlayBtn = this.$screen.querySelector(".auto");
+    autoPlayBtn.addEventListener("click", onAutoPlayBtnClick);
 
     //Load
     const onLoadClick = () => {
