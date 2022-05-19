@@ -1,10 +1,4 @@
-function twoDimensionArray(m, n) {
-    let arr = new Array(m); // create an empty array of length n
-    for (var i = 0; i < m; i++) {
-        arr[i] = new Array(n); // make each element an array
-    }
-    return arr;
-}
+
 
 class Base {
     tile = 40;
@@ -29,9 +23,22 @@ class Base {
         this.tile = 40;
         this.reached_end = false;
     }
-};
+
+}
 
 
+function twoDimensionArray(m, n) {
+    let arr = new Array(m); // create an empty array of length n
+    for (var i = 0; i < m; i++) {
+        arr[i] = new Array(n); // make each element an array
+    }
+    for (var i = 0; i < 40; i++) {
+        for (var j = 0; j < 40; j++) {
+            arr[i][j] = false;
+        }
+    }
+    return arr;
+}
 
 function getShortestPath(sr, sc, dr, dc, obstacle) {
     const base = new Base();
@@ -107,32 +114,49 @@ function getShortestPath(sr, sc, dr, dc, obstacle) {
     return { x: 1, y: 0 };
 }
 
-function getGreedyDirection(sr, sc, dr, dc, obs, cur) {
+export function getGreedyDirection(sr, sc, dr, dc, obs, cur) {
+    var base = {
+        tile: 40,
+        board: twoDimensionArray(40, 40),
+        visited: twoDimensionArray(40, 40),
 
-    base = new Base();
-    board = base.board;
-    dir = [];
+        dr: [-1, 1, 0, 0],
+        dc: [0, 0, 1, -1],
+    }
+    var board = base.board;
+
+    var pos = [];
+    var result;
 
     for (var i = 0; i < obs.length; i++) {
         board[obs[i].x][obs[i].y] = 3;
     }
     for (var i = 0; i < 4; i++) {
-        rr = sr + base.dr[i];
-        cc = sc + base.dc[i];
+        var rr = sr + base.dr[i];
+        var cc = sc + base.dc[i];
 
         if (rr < 0 || cc < 0) continue;
         if (rr >= base.tile || cc >= base.tile) continue;
-        if (base.board[rr][cc] === 3) continue;
-        if (cur.x === base.dr[i] && cur.y === base.dc[i]) continue;
+        if (board[rr][cc] === 3) continue;
 
-        dir.push({ x: base.dr[i], y: base.dc[i] });
+        pos.push({ x: rr, y: cc });
     }
 
-    if (dir.length === 0) return null;
-    else return dir[0];
+    if (pos.length === 0) return cur;
+    else {
+        var length = 100;
+        for (var i = 0; i < pos.length; i++) {
+            var temp = Math.abs(pos[i].x, dr) + Math.abs(pos[i].y, dc);
+            if (length > temp) {
+                length = temp;
+                result = { x: sc - pos[0].y, y: pos[0].x - sr };
+            }
+        }
+        return result;
+    }
 
 }
 
+console.log(getGreedyDirection(1, 1, 3, 3, [{ x: 2, y: 2 }], { x: 1, y: 0 }));
 
-console.log(getGreedyDirection(1, 1, 2, 2, [{ x: 1, y: 2 }], { x: -1, y: 0 }));
 

@@ -1,4 +1,5 @@
 import { GenerateFruitPosition } from "./utils.js";
+import * as solver from "./solver.js";
 
 
 export default class AutoGreedy {
@@ -152,8 +153,12 @@ export default class AutoGreedy {
         //     this.state.velocity.y !== 1
         //         ? this.setState({ velocity: { x: 0, y: 1 } })
         //         : null;
-        // when the fruit appears behind of the snake the game will be stopped
-        var direction = getGreedyDirection(this.state.playerPos.x, this.state.playerPos.y, this.state.fruitPos.x, this.state.fruitPos.y, this.state.trail.this.state.velocity);
+
+        var head = this.state.playerPos;
+        var fruit = this.state.fruitPos;
+        var obstacle = this.state.trail;
+        var current = this.state.velocity;
+        var direction = solver.getGreedyDirection(head.x, head.y, fruit.x, fruit.y, obstacle, current);
 
         this.setState({ velocity: direction });
         this.setState({
