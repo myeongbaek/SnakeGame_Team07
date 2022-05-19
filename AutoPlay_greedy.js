@@ -12,7 +12,7 @@ export default class AutoGreedy {
     onGameState = false;
     renderMain;
 
-    trials = 1;
+    trials = 100;
     score_sum = 0;
 
 
@@ -154,12 +154,8 @@ export default class AutoGreedy {
         //         ? this.setState({ velocity: { x: 0, y: 1 } })
         //         : null;
 
-        var head = this.state.playerPos;
-        var fruit = this.state.fruitPos;
-        var obstacle = this.state.trail;
-        var current = this.state.velocity;
-        var direction = solver.getGreedyDirection(head.x, head.y, fruit.x, fruit.y, obstacle, current);
 
+        var direction = solver.getGreedyDirection(this.state);
         this.setState({ velocity: direction });
         this.setState({
             ...this.state,
@@ -216,12 +212,12 @@ export default class AutoGreedy {
         if (this.isGameOver()) {
 
             this.onGameState = false;
-            localStorage.removeItem("state");
+            this.trials--;
+            this.score_sum += this.state.score;
 
-            this.trials = this.trials - 1;
-            this.score_sum = this.score_sum + this.state.score;
 
             if (this.trials > 0) {
+
                 this.setState({
                     playerPos: {
                         x: 20,
@@ -238,8 +234,10 @@ export default class AutoGreedy {
                     },
                     fruitPos: GenerateFruitPosition([], this.state.tileCount),
                 });
+
             }
             else {
+                console.log(this.score_sum / 100);
 
                 const overlay = document.createElement("div");
                 const modal = document.createElement("div");
@@ -324,10 +322,29 @@ export default class AutoGreedy {
             580
         );
 
+        // Fruit location
         this.$canvasContext.fillStyle = "red";
         this.$canvasContext.fillRect(
             this.state.fruitPos.x * this.state.gridSize,
             this.state.fruitPos.y * this.state.gridSize,
+            this.state.gridSize - 2,
+            this.state.gridSize - 2
+        );
+
+        // Head location
+        this.$canvasContext.fillStyle = "blue";
+        this.$canvasContext.fillRect(
+            this.state.playerPos.x * this.state.gridSize,
+            this.state.playerPos.y * this.state.gridSize,
+            this.state.gridSize - 2,
+            this.state.gridSize - 2
+        );
+
+        // Body location
+        this.$canvasContext.fillStyle = "black";
+        this.$canvasContext.fillRect(
+            (this.state.playerPos.x - this.state.velocity.x) * this.state.gridSize,
+            (this.state.playerPos.y - this.state.velocity.y) * this.state.gridSize,
             this.state.gridSize - 2,
             this.state.gridSize - 2
         );
