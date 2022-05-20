@@ -12,7 +12,7 @@ export default class AutoGreedy {
     onGameState = false;
     renderMain;
 
-    trials = 100;
+    trials = 30;
     score_sum = 0;
 
 
@@ -155,7 +155,7 @@ export default class AutoGreedy {
         //         : null;
 
 
-        var direction = solver.getGreedyDirection(this.state);
+        var direction = solver.ShortestPath(this.state);
         this.setState({ velocity: direction });
         this.setState({
             ...this.state,
@@ -217,7 +217,7 @@ export default class AutoGreedy {
 
 
             if (this.trials > 0) {
-
+                console.log(this.trials);
                 this.setState({
                     playerPos: {
                         x: 20,
@@ -237,7 +237,7 @@ export default class AutoGreedy {
 
             }
             else {
-                console.log(this.score_sum / 100);
+                console.log(this.score_sum / 30);
 
                 const overlay = document.createElement("div");
                 const modal = document.createElement("div");
