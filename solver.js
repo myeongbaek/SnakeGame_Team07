@@ -12,7 +12,7 @@ function twoDimensionArray(m, n) {
 }
 
 
-export function getGreedyDirection(state) {
+function getGreedyDirection(state) {
     var sr = state.playerPos.y;
     var sc = state.playerPos.x;
     var dr = state.fruitPos.y;
@@ -66,7 +66,7 @@ export function getGreedyDirection(state) {
 }
 
 
-export function ShortestPath(state) {
+function ShortestPath(state) {
     var sr = state.playerPos.y;
     var sc = state.playerPos.x;
     var dr = state.fruitPos.y;
@@ -110,7 +110,7 @@ export function ShortestPath(state) {
             var cc = c + base.dc[i];
 
             if (rr < 0 || cc < 0) continue;
-            if (rr >= base.tile || cc >= base.tile) continue;
+            if (rr >= 40 || cc >= 40) continue;
             if (base.visited[rr][cc]) continue;
             if (base.board[rr][cc] === 3) continue;
 
@@ -120,16 +120,56 @@ export function ShortestPath(state) {
             base.visited[rr][cc] = true;
         }
     }
-    if (base.reached_end) {
+    console.log(reached_end);
+    if (reached_end) {
         var i = dr, j = dc;
 
-        while (!(parent[i][j].r === sr && parent[i][j].c === sc)) {
+        while (!(parent[i][j].r == sr && parent[i][j].c == sc)) {
             i = parent[i][j].r;
             j = parent[i][j].c;
+            console.log(i, j, sr, sc);
         }
-        return { x: j, y: i };
+        var result = { x: j - sc, y: i - sr };
+        return result;
     }
     else return state.velocity;
 }
 
 
+var state1 = {
+    playerPos: {
+        x: 11,
+        y: 4,
+    },
+    score: 9,
+    gridSize: 15,
+    tileCount: 40,
+    trail: [{ x: 6, y: 6 }, { x: 7, y: 6 }, { x: 8, y: 6 }, { x: 9, y: 6 }, { x: 10, y: 6 },
+    { x: 11, y: 6 }, { x: 11, y: 5 }, { x: 10, y: 5 }, { x: 9, y: 5 }, { x: 8, y: 5 },
+    { x: 8, y: 4 }, { x: 9, y: 4 }, { x: 10, y: 4 }, { x: 11, y: 4 },
+    ],
+    tail: 14,
+    velocity: {
+        x: 1,
+        y: 0,
+    },
+    fruitPos: { x: 29, y: 9 },
+};
+
+var state2 = {
+    playerPos: {
+        x: 5,
+        y: 20,
+    },
+    score: 0,
+    gridSize: 15,
+    tileCount: 40,
+    trail: [],
+    tail: 5,
+    velocity: {
+        x: 0,
+        y: -1,
+    },
+    fruitPos: { x: 5, y: 5 },
+};
+console.log(ShortestPath(state1));

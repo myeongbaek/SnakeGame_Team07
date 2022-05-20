@@ -12,7 +12,7 @@ export default class AutoGreedy {
     onGameState = false;
     renderMain;
 
-    trials = 30;
+    trials = 1;
     score_sum = 0;
 
 
