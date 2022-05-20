@@ -178,7 +178,7 @@ export default class AutoGreedy {
             this.state.playerPos.y > this.state.tileCount - 1
         ) {
             console.log("die : boundary collide");
-            console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
+            console.log(this.state);
             return true;
         }
 
@@ -189,7 +189,7 @@ export default class AutoGreedy {
                 this.state.playerPos.y === this.state.trail[i].y
             ) {
                 console.log("die : self-eating");
-                console.log(this.state.fruitPos, this.state.playerPos, this.state.score);
+                console.log(this.state);
                 return true;
             }
         }
@@ -346,6 +346,6 @@ export default class AutoGreedy {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 100);
+        }, 1000 / 200);
     }
 }

@@ -32,12 +32,12 @@ function getPossibleDrection(state) {
         if (rr < 0 || cc < 0) continue;
         if (rr >= 40 || cc >= 40) continue;
         if (board[rr][cc] === 3) continue;
-        if (base.dr[i] == -cur.y && base.dc[i] == -cur.x) continue;
+        if (dr[i] == -cur.y && dc[i] == -cur.x) continue;
 
-        pos.push({ x: cc, y: rr })
+        pos.push({ x: cc - sc, y: rr - sr });
     }
     if (pos.length > 0) return pos[0];
-    else state.velocity;
+    else return state.velocity;
 }
 
 function getGreedyDirection(state) {
@@ -152,7 +152,7 @@ export function ShortestPath(state) {
         var i = dr, j = dc;
 
         while (!(parent[i][j].row === sr && parent[i][j].col === sc)) {
-            if (!parent[i][j]) return state.velocity;
+            if (!parent[i][j]) return getPossibleDrection(state);
             i = parent[i][j].row;
             j = parent[i][j].col;
         }
