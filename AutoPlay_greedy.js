@@ -340,19 +340,12 @@ export default class AutoGreedy {
             this.state.gridSize - 2
         );
 
-        // Body location
-        this.$canvasContext.fillStyle = "black";
-        this.$canvasContext.fillRect(
-            (this.state.playerPos.x - this.state.velocity.x) * this.state.gridSize,
-            (this.state.playerPos.y - this.state.velocity.y) * this.state.gridSize,
-            this.state.gridSize - 2,
-            this.state.gridSize - 2
-        );
+
     }
 
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 200);
+        }, 1000 / 100);
     }
 }

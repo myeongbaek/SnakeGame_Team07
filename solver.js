@@ -9,8 +9,36 @@ function twoDimensionArray(m, n) {
         }
     }
     return arr;
-}
+};
 
+function getPossibleDrection(state) {
+    var sr = state.playerPos.y;
+    var sc = state.playerPos.x;
+    var dr = [-1, 1, 0, 0];
+    var dc = [0, 0, 1, -1];
+    var obs = state.trail;
+    var cur = state.velocity;
+    var pos = [];
+
+    var board = twoDimensionArray(40, 40);
+    for (var i = 0; i < obs.length; i++) {
+        board[obs[i].y][obs[i].x] = 3;
+    }
+
+    for (var i = 0; i < 4; i++) {
+        var rr = sr + dr[i];
+        var cc = sc + dc[i];
+
+        if (rr < 0 || cc < 0) continue;
+        if (rr >= 40 || cc >= 40) continue;
+        if (board[rr][cc] === 3) continue;
+        if (base.dr[i] == -cur.y && base.dc[i] == -cur.x) continue;
+
+        pos.push({ x: cc, y: rr })
+    }
+    if (pos.length > 0) return pos[0];
+    else state.velocity;
+}
 
 function getGreedyDirection(state) {
     var sr = state.playerPos.y;
@@ -66,7 +94,7 @@ function getGreedyDirection(state) {
 }
 
 
-function ShortestPath(state) {
+export function ShortestPath(state) {
     var sr = state.playerPos.y;
     var sc = state.playerPos.x;
     var dr = state.fruitPos.y;
@@ -116,60 +144,60 @@ function ShortestPath(state) {
 
             rq.push(rr);
             cq.push(cc);
-            parent[rr][cc] = { r, c };
+            if (!parent[rr][cc]) parent[rr][cc] = { row: r, col: c };
             base.visited[rr][cc] = true;
         }
     }
-    console.log(reached_end);
     if (reached_end) {
         var i = dr, j = dc;
 
-        while (!(parent[i][j].r == sr && parent[i][j].c == sc)) {
-            i = parent[i][j].r;
-            j = parent[i][j].c;
-            console.log(i, j, sr, sc);
+        while (!(parent[i][j].row === sr && parent[i][j].col === sc)) {
+            if (!parent[i][j]) return state.velocity;
+            i = parent[i][j].row;
+            j = parent[i][j].col;
         }
-        var result = { x: j - sc, y: i - sr };
+        var result = { x: (j - sc), y: (i - sr) };
         return result;
     }
-    else return state.velocity;
+    else return getPossibleDrection(state);
 }
 
 
-var state1 = {
-    playerPos: {
-        x: 11,
-        y: 4,
-    },
-    score: 9,
-    gridSize: 15,
-    tileCount: 40,
-    trail: [{ x: 6, y: 6 }, { x: 7, y: 6 }, { x: 8, y: 6 }, { x: 9, y: 6 }, { x: 10, y: 6 },
-    { x: 11, y: 6 }, { x: 11, y: 5 }, { x: 10, y: 5 }, { x: 9, y: 5 }, { x: 8, y: 5 },
-    { x: 8, y: 4 }, { x: 9, y: 4 }, { x: 10, y: 4 }, { x: 11, y: 4 },
-    ],
-    tail: 14,
-    velocity: {
-        x: 1,
-        y: 0,
-    },
-    fruitPos: { x: 29, y: 9 },
-};
+// state 1의 경우 bfs가 제대로 작동하나 역추적 시 오류가 발생함 - 원인불명
+// var state1 = {
+//     playerPos: {
+//         x: 11,
+//         y: 4,
+//     },
+//     score: 9,
+//     gridSize: 15,
+//     tileCount: 40,
+//     trail: [{ x: 6, y: 6 }, { x: 7, y: 6 }, { x: 8, y: 6 }, { x: 9, y: 6 }, { x: 10, y: 6 },
+//     { x: 11, y: 6 }, { x: 11, y: 5 }, { x: 10, y: 5 }, { x: 9, y: 5 }, { x: 8, y: 5 },
+//     { x: 8, y: 4 }, { x: 9, y: 4 }, { x: 10, y: 4 }, { x: 11, y: 4 },
+//     ],
+//     tail: 14,
+//     velocity: {
+//         x: 1,
+//         y: 0,
+//     },
+//     fruitPos: { x: 29, y: 9 },
+// };
 
-var state2 = {
-    playerPos: {
-        x: 5,
-        y: 20,
-    },
-    score: 0,
-    gridSize: 15,
-    tileCount: 40,
-    trail: [],
-    tail: 5,
-    velocity: {
-        x: 0,
-        y: -1,
-    },
-    fruitPos: { x: 5, y: 5 },
-};
-console.log(ShortestPath(state1));
+// var state2 = {
+//     playerPos: {
+//         x: 5,
+//         y: 20,
+//     },
+//     score: 0,
+//     gridSize: 15,
+//     tileCount: 40,
+//     trail: [],
+//     tail: 5,
+//     velocity: {
+//         x: 0,
+//         y: -1,
+//     },
+//     fruitPos: { x: 5, y: 5 },
+// };
+// console.log(ShortestPath(state1));
