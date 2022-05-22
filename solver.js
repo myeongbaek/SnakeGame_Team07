@@ -3,36 +3,39 @@ function twoDimensionArray(m, n) {
     for (var i = 0; i < m; i++) {
         arr[i] = new Array(n); // make each element an array
     }
+
     for (var i = 0; i < 40; i++) {
         for (var j = 0; j < 40; j++) {
             arr[i][j] = false;
         }
     }
+
     return arr;
 };
 
-function getPossibleDrection(state) {
-    var sr = state.playerPos.y;
-    var sc = state.playerPos.x;
-    var dr = [-1, 1, 0, 0];
-    var dc = [0, 0, 1, -1];
-    var obs = state.trail;
-    var cur = state.velocity;
-    var pos = [];
-    var result;
+function farthest_path(state) {
+    var start = state.playerPos, sr = start.y, sc = start.x,
+        end = state.fruitPos, dr = end.y, dc = end.x,
+        cur = state.velocity,
+        obs = state.trail;
 
-    var board = twoDimensionArray(40, 40);
+    var board = twoDimensionArray(40, 40),
+        vr = [-1, 1, 0, 0],
+        vc = [0, 0, 1, -1],
+        pos = [];
+
     for (var i = 0; i < obs.length; i++) {
-        board[obs[i].y][obs[i].x] = 3;
+        board[obs[i].y][obs[i].x] = "O";
     }
 
+    // Looking up the possible direction 
     for (var i = 0; i < 4; i++) {
-        var rr = sr + dr[i];
-        var cc = sc + dc[i];
+        var rr = sr + vr[i];
+        var cc = sc + vc[i];
 
         if (rr < 0 || cc < 0) continue;
         if (rr >= 40 || cc >= 40) continue;
-        if (board[rr][cc] === 3) continue;
+        if (board[rr][cc] === "O") continue;
         if (dr[i] == -cur.y && dc[i] == -cur.x) continue;
 
         pos.push({ x: cc, y: rr });
@@ -41,7 +44,7 @@ function getPossibleDrection(state) {
     if (pos.length === 0) return cur;
     else {
         var length = 0
-
+        //Get farthest possible direction
         for (var i = 0; i < pos.length; i++) {
             var temp = Math.abs(pos[i].y - state.fruitPos.y) + Math.abs(pos[i].x - state.fruitPos.x);
             if (length < temp) {
@@ -54,90 +57,25 @@ function getPossibleDrection(state) {
 
 }
 
-function getGreedyDirection(state) {
-    var sr = state.playerPos.y;
-    var sc = state.playerPos.x;
-    var dr = state.fruitPos.y;
-    var dc = state.fruitPos.x;
-    var obs = state.trail;
-    var cur = state.velocity;
-    var tile = state.tileCount;
-
-    var base = {
-        board: twoDimensionArray(40, 40),
-        visited: twoDimensionArray(40, 40),
-
-        dr: [-1, 1, 0, 0],
-        dc: [0, 0, 1, -1],
-    }
-    var board = base.board;
 
 
+export function shortest_path(state) {
+    var start = state.playerPos, sr = start.y, sc = start.x,
+        end = state.fruitPos, dr = end.y, dc = end.x,
+        obs = state.trail;
 
-    var pos = [];
-    var result;
+    var board = twoDimensionArray(40, 40),
+        visited = twoDimensionArray(40, 40),
+        vr = [-1, 1, 0, 0],
+        vc = [0, 0, 1, -1],
+        rq = [], cq = [],
+        reached_end = false;
 
-    for (var i = 0; i < obs.length; i++) {
-        board[obs[i].y][obs[i].x] = 3;
-    }
-    for (var i = 0; i < 4; i++) {
-        var rr = sr + base.dr[i];
-        var cc = sc + base.dc[i];
-
-        if (rr < 0 || cc < 0) continue;
-        if (rr >= tile || cc >= tile) continue;
-        if (board[rr][cc] === 3) continue;
-        if (base.dr[i] == -cur.y && base.dc[i] == -cur.x) continue;
-
-        pos.push({ x: cc, y: rr });
-    }
-
-    if (pos.length === 0) return cur;
-    else {
-        var length = 100;
-        for (var i = 0; i < pos.length; i++) {
-            var temp = Math.abs(pos[i].y - dr) + Math.abs(pos[i].x - dc);
-            if (length > temp) {
-                length = temp;
-                result = { x: pos[i].x - sc, y: pos[i].y - sr };
-            }
-        }
-        return result;
-    }
-
-}
-
-
-export function ShortestPath(state) {
-    var sr = state.playerPos.y;
-    var sc = state.playerPos.x;
-    var dr = state.fruitPos.y;
-    var dc = state.fruitPos.x;
-    var obs = state.trail;
-
-    var reached_end = false;
-
-    var base = {
-        board: twoDimensionArray(40, 40),
-        visited: twoDimensionArray(40, 40),
-        parent: twoDimensionArray(40, 40),
-        dr: [-1, 1, 0, 0],
-        dc: [0, 0, 1, -1],
-    }
-
-    var parent = base.parent;
-
-    var rq = [];
-    var cq = [];
-
-
-    rq.push(sr);
-    cq.push(sc);
-    base.visited[sr][sc] = true;
-    for (var i = 0; i < obs.length; i++) {
-        base.board[obs[i].y][obs[i].x] = 3;
-    }
     // bfs 
+    rq.push(sr); cq.push(sc);
+    board[sr][sc] = { cost: 0 };
+    visited[sr][sc] = true;
+    for (var i = 0; i < obs.length; i++) board[obs[i].y][obs[i].x] = "O";
     while (rq.length > 0) {
         var r = rq.shift();
         var c = cq.shift();
@@ -148,31 +86,34 @@ export function ShortestPath(state) {
         }
         for (var i = 0; i < 4; i++) {
 
-            var rr = r + base.dr[i];
-            var cc = c + base.dc[i];
+            var rr = r + vr[i];
+            var cc = c + vc[i];
 
             if (rr < 0 || cc < 0) continue;
             if (rr >= 40 || cc >= 40) continue;
-            if (base.visited[rr][cc]) continue;
-            if (base.board[rr][cc] === 3) continue;
+            if (board[rr][cc] === "O") continue;
+            if (visited[rr][cc]) continue;
 
             rq.push(rr);
             cq.push(cc);
-            if (!parent[rr][cc]) parent[rr][cc] = { row: r, col: c };
-            base.visited[rr][cc] = true;
+            board[rr][cc] = { parent: { r, c }, cost: board[r][c].cost + 1 };
+            visited[rr][cc] = true;
         }
     }
+    // 역추적
     if (reached_end) {
-        var index = { row: dr, col: dc };
-        while (true) {
-            if (parent[index.row][index.col].row === sr && parent[index.row][index.col].col === sc) break;
-            else { index = parent[index.row][index.col]; }
+        var p = { r: dr, c: dc };
+        while (!(board[p.r][p.c].parent.r === sr && board[p.r][p.c].parent.c === sc)) {
+            p = board[p.r][p.c].parent;
         }
-        var result = { x: (index.col - sc), y: (index.row - sr) };
-        return result;
+        return { x: p.c - sc, y: p.r - sr };
     }
-    else return getPossibleDrection(state);
+    else return farthest_path(state);
 }
+
+
+
+
 
 
 // var state1 = {
@@ -194,6 +135,8 @@ export function ShortestPath(state) {
 //     },
 //     fruitPos: { x: 29, y: 9 },
 // };
+
+// console.log(ShortestPath(state1));
 
 // var state2 = {
 //     playerPos: {
