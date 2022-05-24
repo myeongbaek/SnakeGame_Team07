@@ -11,7 +11,6 @@ export default class Game {
   onGameState = false;
   renderMain;
 
-
   state = {
     playerPos: {
       x: 20,
@@ -47,7 +46,6 @@ export default class Game {
     this.$canvas = document.getElementById("canvas");
     this.$canvasContext = this.$canvas.getContext("2d");
     addEventListener("keydown", (event) => this.keyPress(event));
-
   }
 
   keyPress(event) {
@@ -181,8 +179,6 @@ export default class Game {
         y: this.state.playerPos.y + this.state.velocity.y,
       },
     });
-
-
   }
 
   isGameOver() {
@@ -219,12 +215,9 @@ export default class Game {
     this.move();
     this.isKeyPressed = false;
 
-    // game overstate
     if (this.isGameOver()) {
-
       this.onGameState = false;
       localStorage.removeItem("state");
-
 
       const overlay = document.createElement("div");
       overlay.classList = "overlay";
@@ -306,7 +299,6 @@ export default class Game {
       });
 
       clearInterval(this.intervalId);
-
     }
 
     this.$canvasContext.fillStyle = "black";
@@ -319,7 +311,6 @@ export default class Game {
 
     while (this.state.trail.length > this.state.tail) this.state.trail.shift();
 
-    // fill the snake move with lime colour
     this.$canvasContext.fillStyle = "lime";
     this.state.trail.forEach((body) => {
       this.$canvasContext.fillRect(
@@ -330,7 +321,6 @@ export default class Game {
       );
     });
 
-    // snake bite the fruit => update the fruit location
     if (
       this.state.playerPos.x === this.state.fruitPos.x &&
       this.state.playerPos.y === this.state.fruitPos.y

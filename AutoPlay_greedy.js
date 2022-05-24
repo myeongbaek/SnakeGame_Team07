@@ -15,9 +15,6 @@ export default class AutoGreedy {
     trials = 30;
     score_sum = 0;
 
-
-
-
     state = {
         playerPos: {
             x: 20,
@@ -155,16 +152,14 @@ export default class AutoGreedy {
         //         : null;
 
 
-        var direction = solver.ShortestPath(this.state);
+        var direction = solver.getDirection(this.state);
         this.setState({ velocity: direction });
         this.setState({
-            ...this.state,
             playerPos: {
                 x: this.state.playerPos.x + this.state.velocity.x,
                 y: this.state.playerPos.y + this.state.velocity.y,
             },
         });
-
 
 
     }
@@ -204,6 +199,7 @@ export default class AutoGreedy {
     }
 
     render() {
+
         this.move();
         this.onGameState = true;
 
@@ -278,6 +274,10 @@ export default class AutoGreedy {
                 clearInterval(this.intervalId);
             }
         }
+        // snake head location 
+        this.state.trail.push(this.state.playerPos);
+        while (this.state.trail.length > this.state.tail) this.state.trail.shift();
+
 
         // canvas style
         this.$canvasContext.fillStyle = "black";
@@ -294,13 +294,6 @@ export default class AutoGreedy {
             );
         });
 
-        // snake head location 
-        this.state.trail.push({
-            x: this.state.playerPos.x,
-            y: this.state.playerPos.y,
-        });
-
-        while (this.state.trail.length > this.state.tail) this.state.trail.shift();
 
         // snake bite the fruit => update the fruit location
         if (
@@ -311,6 +304,7 @@ export default class AutoGreedy {
             this.state.tail++;
             this.state.score++;
         }
+
 
         // Displaying Score
         this.$canvasContext.font = "15pt Calibri";
@@ -327,6 +321,14 @@ export default class AutoGreedy {
         this.$canvasContext.fillRect(
             this.state.fruitPos.x * this.state.gridSize,
             this.state.fruitPos.y * this.state.gridSize,
+            this.state.gridSize - 2,
+            this.state.gridSize - 2
+        );
+
+        this.$canvasContext.fillStyle = "red";
+        this.$canvasContext.fillRect(
+            this.state.playerPos.x * this.state.gridSize,
+            this.state.playerPos.y * this.state.gridSize,
             this.state.gridSize - 2,
             this.state.gridSize - 2
         );
