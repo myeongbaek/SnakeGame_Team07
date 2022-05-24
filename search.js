@@ -14,7 +14,7 @@ function twoDimensionArray(m, n) {
 };
 
 
-export function farthestPath(sr, sc, dr, dc, obs) {
+export function farthestPath(sr, sc, dr, dc, obs, curr) {
 
     var board = twoDimensionArray(40, 40),
         vr = [-1, 1, 0, 0],
@@ -34,12 +34,12 @@ export function farthestPath(sr, sc, dr, dc, obs) {
         if (rr < 0 || cc < 0) continue;
         if (rr >= 40 || cc >= 40) continue;
         if (board[rr][cc] === "O") continue;
-        if (rr === obs[0].y && cc === obs[0].x) continue;
-
+        if (rr === curr.y && cc === curr.x) continue;
+        if (vr[i] * curr.y + vc[i] * curr.x === 0) return { x: vc[i], y: vr[i] };
         pos.push({ x: cc, y: rr });
     }
 
-    if (pos.length === 0) return { x: 0, y: -1 };
+    if (pos.length === 0) return curr;
     else {
         var length = 0
         //Get farthest possible direction
@@ -108,10 +108,9 @@ export function shortestPath(sr, sc, dr, dc, obs) {
 }
 
 
-export function longestPath(sr, sc, dr, dc, obs) {
+export function longestPath(sr, sc, dr, dc, obs, curr) {
 
     var board = twoDimensionArray(40, 40),
-        visited = twoDimensionArray(40, 40),
         vr = [-1, 1, 0, 0],
         vc = [0, 0, 1, -1],
         pos = [], path, r, c;
@@ -133,23 +132,35 @@ export function longestPath(sr, sc, dr, dc, obs) {
             if (rr < 0 || cc < 0) continue;
             if (rr >= 40 || cc >= 40) continue;
             if (board[rr][cc] === "O") continue;
-            if (shortestPath(rr, cc, obs[0].y, obs[0].x, obs.slice(1,)) === null) continue;
 
             pos.push({ x: vc[i], y: vr[i] });
         }
 
         if (pos.length > 1) {
             for (var j = 0; j < pos.length; j++) {
-                //가장 먼저 탐색된는 위쪽 방향에 우선시되어 진행된다. 
-                if (pos[j] !== path) {
-                    return pos[j];
-                }
-                return path;
+                if (pos[j].x * curr.x + pos[j].y + curr.y === 0) return pos[j];
             }
+            return pos[0];
         }
         else return path;
     }
     else return null;
+}
+
+function isSurrounded(board, r, c) {
+    var vr = [-1, 1, 0, 0],
+        vc = [0, 0, 1, -1],
+        rr, cc;
+
+    for (var i = 0; i < 4; i++) {
+        rr = r + vr[i];
+        cc = c + vc[i];
+
+        if (rr < 0 || cc < 0) continue;
+        if (rr >= 40 || cc >= 40) continue;
+        if (board[rr][cc] !== 'O') return false;
+    }
+    return true;
 }
 
 

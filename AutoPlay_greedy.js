@@ -214,22 +214,24 @@ export default class AutoGreedy {
 
             if (this.trials > 0) {
                 console.log(this.trials);
-                this.setState({
-                    playerPos: {
-                        x: 20,
-                        y: 20,
-                    },
-                    score: 0,
-                    gridSize: 15,
-                    tileCount: 40,
-                    trail: [],
-                    tail: 5,
-                    velocity: {
-                        x: 0,
-                        y: -1,
-                    },
-                    fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                });
+                clearInterval(this.intervalId);
+
+                // this.setState({
+                //     playerPos: {
+                //         x: 20,
+                //         y: 20,
+                //     },
+                //     score: 0,
+                //     gridSize: 15,
+                //     tileCount: 40,
+                //     trail: [],
+                //     tail: 5,
+                //     velocity: {
+                //         x: 0,
+                //         y: -1,
+                //     },
+                //     fruitPos: GenerateFruitPosition([], this.state.tileCount),
+                // });
 
             }
             else {
