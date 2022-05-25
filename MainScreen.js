@@ -1,4 +1,5 @@
 import AutoGreedy from "./AutoPlay_greedy.js";
+import Dual from "./Dual.js";
 import Game from "./Game.js";
 
 export default class MainScreen {
@@ -6,12 +7,14 @@ export default class MainScreen {
   $screen;
   game;
   autoPlay;
+  dual;
   constructor({ $target }) {
     this.$target = $target;
 
     this.$screen = document.createElement("div");
     this.$screen.classList = "box";
-    this.game = new Game({ $target, renderMain: this.render });
+    this.game = new Game({ $target, renderMain: this.render })
+    this.dual = new Dual({ $target, renderMain: this.render })
     this.autoPlay = new AutoGreedy({ $target, renderMain: this.render });
 
     this.render();
@@ -44,6 +47,13 @@ export default class MainScreen {
     };
     const automodeBtn = this.$screen.querySelector(".auto");
     automodeBtn.addEventListener("click", onAutoModeClick);
+    //Dual
+    const onDualClick = () => {
+      this.dual.setUp();
+      this.dual.gameLoop();
+    };
+    const dualBtn = this.$screen.querySelector(".dual");
+    dualBtn.addEventListener("click", onDualClick);
 
     //Load
     const onLoadClick = () => {
