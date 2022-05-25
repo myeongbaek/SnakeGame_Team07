@@ -23,7 +23,8 @@ export default class MainScreen {
   render = () => {
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
-        <span class="start btn">Start</span>
+        <span class="start btn single">Start</span>
+        <span class="start btn dual">Dual Mode</span>
         <span class="auto btn">Auto Play</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
