@@ -1,4 +1,4 @@
-import AutoGreedy from "./AutoPlay_greedy.js";
+import Auto from "./Auto.js";
 import Dual from "./Dual.js";
 import Game from "./Game.js";
 
@@ -15,7 +15,7 @@ export default class MainScreen {
     this.$screen.classList = "box";
     this.game = new Game({ $target, renderMain: this.render })
     this.dual = new Dual({ $target, renderMain: this.render })
-    this.autoPlay = new AutoGreedy({ $target, renderMain: this.render });
+    this.autoPlay = new Auto({ $target, renderMain: this.render });
 
     this.render();
   }

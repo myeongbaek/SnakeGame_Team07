@@ -2,7 +2,7 @@ import { GenerateFruitPosition } from "./utils.js";
 import * as solver from "./solver.js";
 
 
-export default class AutoGreedy {
+export default class Auto {
     $target;
     $canvas;
     $canvasContext;
@@ -133,35 +133,21 @@ export default class AutoGreedy {
     }
 
     move() {
+        var direction = solver.shortestPath(this.state);
 
-        // if (this.state.playerPos.x > this.state.fruitPos.x)
-        //     this.state.velocity.x !== 1
-        //         ? this.setState({ velocity: { x: -1, y: 0 } })
-        //         : null;
-        // else if (this.state.playerPos.x < this.state.fruitPos.x)
-        //     this.state.velocity.x !== -1
-        //         ? this.setState({ velocity: { x: 1, y: 0 } })
-        //         : null;
-        // else if (this.state.playerPos.y > this.state.fruitPos.y)
-        //     this.state.velocity.y !== -1
-        //         ? this.setState({ velocity: { x: 0, y: -1 } })
-        //         : null;
-        // else if (this.state.playerPos.y < this.state.fruitPos.y)
-        //     this.state.velocity.y !== 1
-        //         ? this.setState({ velocity: { x: 0, y: 1 } })
-        //         : null;
-
-
-        var direction = solver.getDirection(this.state);
-        this.setState({ velocity: direction });
-        this.setState({
-            playerPos: {
-                x: this.state.playerPos.x + this.state.velocity.x,
-                y: this.state.playerPos.y + this.state.velocity.y,
-            },
-        });
-
-
+        try {
+            this.setState({ velocity: direction });
+            this.setState({
+                playerPos: {
+                    x: this.state.playerPos.x + this.state.velocity.x,
+                    y: this.state.playerPos.y + this.state.velocity.y,
+                },
+            });
+        }
+        catch {
+            console.log(direction);
+            clearInterval(this.intervalId);
+        }
     }
 
     isGameOver() {
@@ -208,73 +194,75 @@ export default class AutoGreedy {
         if (this.isGameOver()) {
 
             this.onGameState = false;
-            this.trials--;
-            this.score_sum += this.state.score;
+            // this.trials--;
+            // this.score_sum += this.state.score;
 
 
-            if (this.trials > 0) {
-                console.log(this.trials);
-                clearInterval(this.intervalId);
+            // if (this.trials > 0) {
+            //     console.log(this.trials);
 
-                // this.setState({
-                //     playerPos: {
-                //         x: 20,
-                //         y: 20,
-                //     },
-                //     score: 0,
-                //     gridSize: 15,
-                //     tileCount: 40,
-                //     trail: [],
-                //     tail: 5,
-                //     velocity: {
-                //         x: 0,
-                //         y: -1,
-                //     },
-                //     fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                // });
+            //     // if (this.state.score < averagescore) clearInterval(this.intervalId);
+            //     // else {
+            //     this.setState({
+            //         playerPos: {
+            //             x: 20,
+            //             y: 20,
+            //         },
+            //         score: 0,
+            //         gridSize: 15,
+            //         tileCount: 40,
+            //         trail: [],
+            //         tail: 5,
+            //         velocity: {
+            //             x: 0,
+            //             y: -1,
+            //         },
+            //         fruitPos: GenerateFruitPosition([], this.state.tileCount),
+            //     });
+            //     // }
 
-            }
-            else {
-                console.log(this.score_sum / 30);
+            // }
+            // else {
+            //     console.log(this.score_sum / 30);
 
-                const overlay = document.createElement("div");
-                const modal = document.createElement("div");
-                overlay.classList = "overlay";
-                modal.classList = "modal";
-                modal.innerHTML = `
+            const overlay = document.createElement("div");
+            const modal = document.createElement("div");
+            overlay.classList = "overlay";
+            modal.classList = "modal";
+            modal.innerHTML = `
                     <h1>You died</h1>
                     <span class="score">Score : ${this.state.score}</span>                
                     <span class="btn exit">Exit</span>
                 `;
-                overlay.appendChild(modal);
-                this.$target.appendChild(overlay);
+            overlay.appendChild(modal);
+            this.$target.appendChild(overlay);
 
 
-                const exit = this.$target.querySelector(".exit");
-                exit.addEventListener("click", () => {
-                    this.isPaused = false;
-                    this.setState({
-                        playerPos: {
-                            x: 20,
-                            y: 20,
-                        },
-                        score: 0,
-                        gridSize: 15,
-                        tileCount: 40,
-                        trail: [],
-                        tail: 5,
-                        velocity: {
-                            x: 0,
-                            y: -1,
-                        },
-                        fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                    });
-                    clearInterval(this.intervalId);
-                    this.renderMain();
+            const exit = this.$target.querySelector(".exit");
+            exit.addEventListener("click", () => {
+                this.isPaused = false;
+                this.setState({
+                    playerPos: {
+                        x: 20,
+                        y: 20,
+                    },
+                    score: 0,
+                    gridSize: 15,
+                    tileCount: 40,
+                    trail: [],
+                    tail: 5,
+                    velocity: {
+                        x: 0,
+                        y: -1,
+                    },
+                    fruitPos: GenerateFruitPosition([], this.state.tileCount),
                 });
-
                 clearInterval(this.intervalId);
-            }
+                this.renderMain();
+            });
+
+            clearInterval(this.intervalId);
+            //}
         }
         // snake head location 
         this.state.trail.push(this.state.playerPos);
@@ -327,13 +315,14 @@ export default class AutoGreedy {
             this.state.gridSize - 2
         );
 
-        this.$canvasContext.fillStyle = "red";
-        this.$canvasContext.fillRect(
-            this.state.playerPos.x * this.state.gridSize,
-            this.state.playerPos.y * this.state.gridSize,
-            this.state.gridSize - 2,
-            this.state.gridSize - 2
-        );
+        //Head location
+        // this.$canvasContext.fillStyle = "red";
+        // this.$canvasContext.fillRect(
+        //     this.state.playerPos.x * this.state.gridSize,
+        //     this.state.playerPos.y * this.state.gridSize,
+        //     this.state.gridSize - 2,
+        //     this.state.gridSize - 2
+        // );
 
 
     }
@@ -341,6 +330,11 @@ export default class AutoGreedy {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 200);
+        }, 1000 / 15);
+
+        // maximum speed
+        // this.intervalId = setInterval(() => {
+        //     this.render();
+        // }, 1000 / 200);
     }
 }
