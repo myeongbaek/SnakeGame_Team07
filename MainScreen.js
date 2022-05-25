@@ -1,15 +1,18 @@
+import Dual from "./Dual.js";
 import Game from "./Game.js";
 
 export default class MainScreen {
   $target;
   $screen;
   game;
+  dual;
   constructor({ $target }) {
     this.$target = $target;
 
     this.$screen = document.createElement("div");
     this.$screen.classList = "box";
     this.game = new Game({ $target, renderMain: this.render });
+    this.dual = new Dual({ $target, renderMain: this.render });
 
     this.render();
   }
@@ -17,7 +20,8 @@ export default class MainScreen {
   render = () => {
     this.$screen.innerHTML = `
         <h1>Snake Game</h1>
-        <span class="start btn">Start</span>
+        <span class="start btn single">Start</span>
+        <span class="start btn dual">Dual Mode</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
         <span class="btn">Exit</span>
@@ -32,6 +36,14 @@ export default class MainScreen {
     };
     const startBtn = this.$screen.querySelector(".start");
     startBtn.addEventListener("click", onStartClick);
+
+    //Dual
+    const onDualClick = () => {
+      this.dual.setUp();
+      this.dual.gameLoop();
+    };
+    const dualBtn = this.$screen.querySelector(".dual");
+    dualBtn.addEventListener("click", onDualClick);
 
     //Load
     const onLoadClick = () => {
@@ -64,20 +76,21 @@ export default class MainScreen {
       this.$screen.innerHTML = `
         <h1>Top 10 Rank</h1>
         <div class="rank-container">
-          ${rankarr !== null
-          ? rankarr
-            .map((rank, index) => {
-              return `
+          ${
+            rankarr !== null
+              ? rankarr
+                  .map((rank, index) => {
+                    return `
               <div class="rank-data">
               <span class="rank-data__index">${index + 1}.</span>
               <span class="rank-data__name">${rank.username}</span>
               <span class="rank-data__score">${rank.score}점</span>
               </div>
               `;
-            })
-            .join("")
-          : `<span>No Data</span>`
-        }
+                  })
+                  .join("")
+              : `<span>No Data</span>`
+          }
             </div>
           <span class="menu btn">Exit</span>
       `;
