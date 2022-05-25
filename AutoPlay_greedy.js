@@ -134,33 +134,22 @@ export default class AutoGreedy {
 
     move() {
 
-        // if (this.state.playerPos.x > this.state.fruitPos.x)
-        //     this.state.velocity.x !== 1
-        //         ? this.setState({ velocity: { x: -1, y: 0 } })
-        //         : null;
-        // else if (this.state.playerPos.x < this.state.fruitPos.x)
-        //     this.state.velocity.x !== -1
-        //         ? this.setState({ velocity: { x: 1, y: 0 } })
-        //         : null;
-        // else if (this.state.playerPos.y > this.state.fruitPos.y)
-        //     this.state.velocity.y !== -1
-        //         ? this.setState({ velocity: { x: 0, y: -1 } })
-        //         : null;
-        // else if (this.state.playerPos.y < this.state.fruitPos.y)
-        //     this.state.velocity.y !== 1
-        //         ? this.setState({ velocity: { x: 0, y: 1 } })
-        //         : null;
 
+        var direction = solver.shortestPath(this.state);
 
-        var direction = solver.getDirection(this.state);
-        this.setState({ velocity: direction });
-        this.setState({
-            playerPos: {
-                x: this.state.playerPos.x + this.state.velocity.x,
-                y: this.state.playerPos.y + this.state.velocity.y,
-            },
-        });
-
+        try {
+            this.setState({ velocity: direction });
+            this.setState({
+                playerPos: {
+                    x: this.state.playerPos.x + this.state.velocity.x,
+                    y: this.state.playerPos.y + this.state.velocity.y,
+                },
+            });
+        }
+        catch {
+            console.log(direction);
+            clearInterval(this.intervalId);
+        }
 
     }
 
@@ -214,24 +203,25 @@ export default class AutoGreedy {
 
             if (this.trials > 0) {
                 console.log(this.trials);
-                clearInterval(this.intervalId);
-
-                // this.setState({
-                //     playerPos: {
-                //         x: 20,
-                //         y: 20,
-                //     },
-                //     score: 0,
-                //     gridSize: 15,
-                //     tileCount: 40,
-                //     trail: [],
-                //     tail: 5,
-                //     velocity: {
-                //         x: 0,
-                //         y: -1,
-                //     },
-                //     fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                // });
+                // if (this.state.score < averagescore) clearInterval(this.intervalId);
+                // else {
+                this.setState({
+                    playerPos: {
+                        x: 20,
+                        y: 20,
+                    },
+                    score: 0,
+                    gridSize: 15,
+                    tileCount: 40,
+                    trail: [],
+                    tail: 5,
+                    velocity: {
+                        x: 0,
+                        y: -1,
+                    },
+                    fruitPos: GenerateFruitPosition([], this.state.tileCount),
+                });
+                // }
 
             }
             else {
