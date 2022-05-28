@@ -10,13 +10,17 @@ export default class Auto {
     isKeyPressed = false;
     onGameState = false;
     renderMain;
-
     state = {
         playerPos: {
             x: 20,
             y: 20,
         },
         score: 0,
+        e:0,
+        u:0,
+        r:0,
+        d:0,
+        l:0,
         gridSize: 15,
         tileCount: 40,
         trail: [],
@@ -45,7 +49,7 @@ export default class Auto {
     `;
         this.$canvas = document.getElementById("canvas");
         this.$canvasContext = this.$canvas.getContext("2d");
-       // this.keyPress();
+        // this.keyPress();
 
         addEventListener("keydown", (event) => this.keyPress(event));
     }
@@ -96,6 +100,11 @@ export default class Auto {
             this.setState({
                 ...this.state,
                 score: 0,
+                e:0,
+                u:0,
+                r:0,
+                d:0,
+                l:0,
                 playerPos: { x: 20, y: 20 },
                 fruitPos: GenerateFruitPosition([], this.state.tileCount),
                 velocity: { x: 0, y: -1 },
@@ -115,6 +124,11 @@ export default class Auto {
                     y: 20,
                 },
                 score: 0,
+                e:0,
+                u:0,
+                r:0,
+                d:0,
+                l:0,
                 gridSize: 15,
                 tileCount: 40,
                 trail: [],
@@ -129,10 +143,47 @@ export default class Auto {
             this.renderMain();
         });
     }
+     getDistance(fx,fy,px,py) {
+        let distanceX = fx - px;
+        let distanceY = fy - py;
+        return Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2));
+        /*
+         this.state.e= Math.sqrt(Math.pow(distanceX,2) + Math.pow(distanceY,2));
+         localStorage.setItem("e", this.state.e);
+*/
+
+    }
+    drawPath(){
+        ctx.strokeStyle = "blue";
+        for(let i=0; i<path.length -1; i++){
+            ctx.beginPath();
+            ctx.moveTo(path[i].x, path[i].y);
+            ctx.lineTo(path[i+1].x, path[i+1].y);
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
+
+    die(x,y)
+    {
+        for (var i = 0; i < this.state.trail.length - 1; i++) {
+            if (
+                this.state.playerPos.x+x === this.state.trail[i].x &&
+                this.state.playerPos.y+y === this.state.trail[i].y
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     move() {
 
+//this.getDistance();
 //if (this.state.fruitPos.y<39&&this.state.fruitPos.y>0){
-
+        // var n =Math.hypot(cell[0] - point[0], cell[1] - point[1]);
+/*
         if (this.state.playerPos.y > this.state.fruitPos.y) {
             this.state.velocity.y !== 1
                 ? this.setState({velocity: {x: 0, y: -1}})
@@ -147,19 +198,92 @@ export default class Auto {
             this.state.velocity.x !== -1
                 ? this.setState({velocity: {x: 1, y: 0}})
                 : null;
+
         }
         if (this.state.playerPos.x > this.state.fruitPos.x) {
             this.state.velocity.x !== 1
                 ? this.setState({velocity: {x: -1, y: 0}})
                 : null;
         }
-        this.setState({
-            ...this.state,
-            playerPos: {
-                x: this.state.playerPos.x + this.state.velocity.x,
-                y: this.state.playerPos.y + this.state.velocity.y,
-            },
-        });
+    this.setState({
+                      ...this.state,
+    playerPos: {
+        x: this.state.playerPos.x + this.state.velocity.x,
+        y: this.state.playerPos.y + this.state.velocity.y,
+    },
+});*/
+
+        var up=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+        var right=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x+1,this.state.playerPos.y);
+        var down=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y-1);
+        var left=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x-1,this.state.playerPos.y);
+
+        if(Math.min( Math.min(Math.min(right, down),left),up)===up){
+           if ((this.state.velocity.y !== -1)&&(this.die(0,1)===false))
+           {  this.setState({velocity: {x: 0, y: 1}});}else
+               if (this.die(1,0)===false)
+                   this.setState({velocity: {x: 1, y: 0}});
+        }
+        if(Math.min( Math.min(Math.min(right, down),left),up)===right){
+
+           if ((this.state.velocity.x !== -1) &&(this.die(1,0)===false)){
+               this.setState({velocity: {x: 1, y: 0}})
+           }else if (this.die(0,1)===false)
+           {this.setState({velocity: {x: 0, y: 1}});}
+
+        }
+        if(Math.min( Math.min(Math.min(right, down),left),up)===down){
+
+          if ((this.state.velocity.y !== 1)&&(this.die(0,-1)===false)){
+                 this.setState({velocity: {x: 0, y: -1}})}else
+          if (this.die(-1,0)===false){
+                 this.setState({velocity: {x: -1, y: 0}})}
+        }
+
+        if((Math.min( Math.min(Math.min(right, down),left),up)===left)&&(this.die()===false)){
+
+          if (( this.state.velocity.x !== 1)&&(this.die(-1,0)===false)){
+                 this.setState({velocity: {x: -1, y: 0}})}else
+         if (this.die(0,1)===false){
+                 this.setState({velocity: {x: 0, y: 1}})}
+        }
+
+
+/*
+                if(this.state.velocity.y !== -1){//-down
+                    var min=Math.min(Math.min(right, down),left);
+                    if(min===right){this.setState({velocity: {x: 1, y: 0}})}
+                         else if (min===down){his.setState({velocity: {x: 0, y: 1}})}
+                                else if (min===left){this.setState({velocity: {x: -1, y: 0}})} }
+
+                if(this.state.velocity.y !== 1){//-up
+                    var min=Math.min(Math.min(right, up),left);
+                    if(min===right){this.setState({velocity: {x: 1, y: 0}})}
+                    else if (min===up){his.setState({velocity: {x: 0, y: -1}})}
+                    else if (min===left){this.setState({velocity: {x: -1, y: 0}})} }
+
+                if(this.state.velocity.x !== 1){//left
+                    var min=Math.min(Math.min(right, up),left);
+                    if(min===right){this.setState({velocity: {x: 1, y: 0}})}
+                    else if (min===up){his.setState({velocity: {x: 0, y: -1}})}
+                    else if (min===down){this.setState({velocity: {x: 0, y: 1}})} }
+
+                if(this.state.velocity.y !== 1){//right
+                    var min=Math.min(Math.min(right, up),left);
+                    if(min===down){this.setState({velocity: {x: 0, y: 1}})}
+                    else if (min===up){his.setState({velocity: {x: 0, y: -1}})}
+                    else if (min===left){this.setState({velocity: {x: -1, y: 0}})} }*/
+                this.setState({
+                    ...this.state,
+                    playerPos: {
+                        x: this.state.playerPos.x + this.state.velocity.x,
+                        y: this.state.playerPos.y + this.state.velocity.y,
+                    },
+                });
+
+
+
+
     }
 
     isGameOver() {
@@ -193,8 +317,19 @@ export default class Auto {
     }
 
     render() {
-        this.move();
-        this.isKeyPressed = false;
+        this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y);
+       // this.state.u=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+       // this.state.r=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x+1,this.state.playerPos.y);
+       // this.state.d=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y-1);
+       // this.state.l=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x-1,this.state.playerPos.y);
+
+       // localStorage.setItem("u", this.state.u);
+      //  localStorage.setItem("r", this.state.r);
+      //  localStorage.setItem("d", this.state.d);
+       // localStorage.setItem("l", this.state.l);
+
+
+
 
         if (this.isGameOver()) {
             this.onGameState = false;
@@ -238,6 +373,7 @@ export default class Auto {
                         y: 20,
                     },
                     score: 0,
+                    e:0,
                     gridSize: 15,
                     tileCount: 40,
                     trail: [],
@@ -263,6 +399,7 @@ export default class Auto {
                         y: 20,
                     },
                     score: 0,
+                    e:0,
                     gridSize: 15,
                     tileCount: 40,
                     trail: [],
@@ -316,6 +453,37 @@ export default class Auto {
         this.$canvasContext.fillStyle = "grey";
         this.$canvasContext.fillText("Score:" + localStorage.getItem("score"), 10, 580);
 
+        // Displaying
+        this.$canvasContext.font = '15pt Calibri';
+        this.$canvasContext.lineWidth = 3;
+        this.$canvasContext.fillStyle = "grey";
+        this.$canvasContext.fillText("snake:" + localStorage.getItem("e"), 80, 580);
+        // Displaying
+        var j=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+        this.$canvasContext.font = '15pt Calibri';
+        this.$canvasContext.lineWidth = 3;
+        this.$canvasContext.fillStyle = "grey";
+        this.$canvasContext.fillText("u:" + j, 120, 550);
+        this.move();
+        this.isKeyPressed = false;
+
+        /*
+        // Displaying
+        this.$canvasContext.font = '15pt Calibri';
+        this.$canvasContext.lineWidth = 3;
+        this.$canvasContext.fillStyle = "grey";
+        this.$canvasContext.fillText("r:" + localStorage.getItem("r"), 160, 520);
+        // Displaying
+        this.$canvasContext.font = '15pt Calibri';
+        this.$canvasContext.lineWidth = 3;
+        this.$canvasContext.fillStyle = "grey";
+        this.$canvasContext.fillText("d:" + localStorage.getItem("d"), 200, 490);
+        // Displaying
+        this.$canvasContext.font = '15pt Calibri';
+        this.$canvasContext.lineWidth = 3;
+        this.$canvasContext.fillStyle = "grey";
+        this.$canvasContext.fillText("l:" + localStorage.getItem("l"), 240, 460);
+*/
         this.$canvasContext.fillStyle = "red";
         this.$canvasContext.fillRect(
             this.state.fruitPos.x * this.state.gridSize,
@@ -330,6 +498,6 @@ export default class Auto {
 
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 500);
+        }, 1000 / 200);
     }
 }
