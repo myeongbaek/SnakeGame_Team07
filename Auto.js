@@ -179,6 +179,300 @@ export default class Auto {
         return false;
     }
     move() {
+        var up=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+        var right=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x+1,this.state.playerPos.y);
+        var down=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y-1);
+        var left=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x-1,this.state.playerPos.y);
+
+        if(Math.min( Math.min(Math.min(right, down),left),up)===up){
+
+            if ((this.state.velocity.y !== -1)&&(this.die(0,1)===false)) {
+                this.setState({velocity: {x: 0, y: 1}});
+            } else
+
+                    if (this.state.velocity.x !== -1 && Math.min(Math.min(right, down),left)===right && this.die(1,0)===false){
+                this.setState({velocity: {x: 1, y: 0}});
+                    }else
+
+                        if ((this.state.velocity.x !== 1)&& Math.min(left, down)===left && this.die(-1,0)===false){
+                            this.setState({velocity: {x: -1, y: 0}});
+                        }else
+
+                                  if ((this.state.velocity.y !== 1) && this.die(0,-1)===false){
+                                    this.setState({velocity: {x: 0, y: -1}});}
+        }
+        //по первому
+        if(Math.min( Math.min(Math.min(right, down),left),up)===right){
+
+            if ((this.state.velocity.x !== -1) &&(this.die(1,0)===false)){
+                this.setState({velocity: {x: 1, y: 0}})
+            } else
+
+                if ((this.state.velocity.y !== -1)&& Math.min(Math.min(up, down),left)===up && this.die(0,1)===false) {
+                    this.setState({velocity: {x: 0, y: 1}});
+
+                }else if ((this.state.velocity.x !== 1)&& Math.min(left, down)===left &&this.die(-1,0)===false) {
+                    this.setState({velocity: {x: -1, y: 0}});}
+
+                         else if ((this.state.velocity.y !== 1)&&this.die(0,-1)===false) {
+                               this.setState({velocity: {x: 0, y: -1}});}
+
+
+        }
+
+        if(Math.min( Math.min(Math.min(right, down),left),up)===down){
+
+            if ((this.state.velocity.y !== 1)&&this.die(0,-1)===false) {
+                this.setState({velocity: {x: 0, y: -1}});}else
+
+            if ((this.state.velocity.x !== -1) && Math.min(Math.min(right,left),up)===right &&(this.die(1,0)===false)){
+                this.setState({velocity: {x: 1, y: 0}})
+            } else
+
+            if ((this.state.velocity.y !== -1)&& Math.min(up,left)===up && this.die(0,1)===false) {
+                this.setState({velocity: {x: 0, y: 1}});
+
+            }else if ((this.state.velocity.x !== 1)&&this.die(-1,0)===false) {
+                this.setState({velocity: {x: -1, y: 0}});}
+
+
+        }
+
+
+
+
+
+        if((Math.min( Math.min(Math.min(right, down),left),up)===left)&&(this.die()===false)){
+
+            if ((this.state.velocity.x !== 1)&&this.die(-1,0)===false) {
+                this.setState({velocity: {x: -1, y: 0}});}
+
+            else
+            if ((this.state.velocity.x !== -1) && Math.min(Math.min(right,down),up)===right &&(this.die(1,0)===false)){
+                this.setState({velocity: {x: 1, y: 0}})
+            } else
+
+            if ((this.state.velocity.y !== -1) && Math.min(up,down)===up && this.die(0,1)===false) {
+                this.setState({velocity: {x: 0, y: 1}});
+
+            }else if ((this.state.velocity.y !== 1)&&this.die(0,-1)===false) {
+                this.setState({velocity: {x: 0, y: -1}});}
+        }
+
+
+
+
+
+
+
+
+
+/*
+        if(this.state.velocity.y !== -1) {
+
+            if (Math.min(Math.min(right, left), up) === up && this.die(0, 1) === false) {
+                this.setState({velocity: {x: 0, y: 1}});
+            }else
+
+            if (Math.min(right, left) === right && this.die(1, 0) === false) {
+                this.setState({velocity: {x: 1, y: 0}});
+            }else
+
+            if ( this.die(-1,0)===false) {
+                this.setState({velocity: {x: -1, y: 0}});
+            }
+        }
+
+
+
+        if(this.state.velocity.y !== 1) {
+            if (Math.min(Math.min(right, down), left) === right && this.die(1, 0) === false) {
+                this.setState({velocity: {x: 1, y: 0}});
+            }else
+            if (Math.min( down, left) === down && this.die(0, -1) === false) {
+                this.setState({velocity: {x: 0, y: -1}});
+            }else
+            if ( this.die(-1, 0) === false) {
+                this.setState({velocity: {x: -1, y: 0}});
+            }
+
+
+
+
+            if (this.state.velocity.x !== 1) {
+                if (Math.min(Math.min(up, down), left) === up && this.die(0, 1) === false) {
+                    this.setState({velocity: {x: 0, y: 1}});
+                }
+                if (Math.min( down, left) === down && this.die(0, -1) === false) {
+                    this.setState({velocity: {x: 0, y: -1}});
+                }else
+                if ( this.die(-1, 0) === false) {
+                    this.setState({velocity: {x: -1, y: 0}});
+                }
+            }
+
+
+
+
+            if (this.state.velocity.x !== -1) {
+                if (Math.min(Math.min(up, down), right) === up && this.die(0, 1) === false) {
+                    this.setState({velocity: {x: 0, y: 1}});
+                }
+                if (Math.min( down, right) === down && this.die(0, -1) === false) {
+                    this.setState({velocity: {x: 0, y: -1}});
+                }
+                if (this.die(1, 0) === false) {
+                    this.setState({velocity: {x: 1, y: 0}});
+                }
+            }
+
+        }*/
+/*
+
+            if( Math.min(Math.min(right,left),up)===up && this.die(0,1)===false){
+                    this.setState({velocity: {x: 0, y: 1}});}else
+                if (this.die(1,0)===false && Math.min(right,left)===right){
+                    this.setState({velocity: {x: 1, y: 0}});}else
+                if (this.die(-1,0)===false){
+                    this.setState({velocity: {x: -1, y: 0}});}
+            }
+
+            if( Math.min(Math.min(right,left),up)===right){
+
+                        if (this.die(1,0)===false){
+                            this.setState({velocity: {x: 1, y: 0}})}else
+                        if (this.die(0,1)===false && Math.min(up,left)===up) {
+                            this.setState({velocity: {x: 0, y: 1}});}else
+                        if (this.die(-1,0)===false) {
+                            this.setState({velocity: {x: -1, y: 0}});}
+
+            }
+
+            if( Math.min(Math.min(right, up),left)===left){
+
+                if (this.die(-1,0)===false){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                if (this.die(0,1)===false&&Math.min(right, up)===up){
+                    this.setState({velocity: {x: 0, y: 1}})}else
+                if (this.die(1,0)===false){
+                    this.setState({velocity: {x: 1, y: 0}})}
+            }
+}*/
+
+
+
+
+/*
+
+            if(this.state.velocity.y !== 1){
+            if( Math.min(Math.min(right, down),left)===right){
+
+                if (this.die(-1,0)===false ){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                        if (this.die(0,-1)===false&& Math.min(left, down)===down)
+                {this.setState({velocity: {x: 0, y: -1}});}else
+                        if (this.die(-1,0)===false)
+                        {this.setState({velocity: {x: -1, y: 0}});}
+
+
+            }
+                if( Math.min(Math.min(right, down),left)===down){
+                    if (this.die(0,-1)===false)
+                    {  this.setState({velocity: {x: 0, y: -1}});}else
+                    if (this.die(1,0)===false && Math.min(right, left)==right){
+                        this.setState({velocity: {x: 1, y: 0}});}else
+                    if (this.die(-1,0)===false){
+                        this.setState({velocity: {x: -1, y: 0}});}
+                }
+
+            if( Math.min(Math.min(right, down),left)===left){
+
+                if ((this.die(-1,0)===false)){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                if (this.die(0,-1)===false && Math.min(right, down)===down){
+                    this.setState({velocity: {x: 0, y: -1}})}else
+                if (this.die(-1,0)===false){
+                    this.setState({velocity: {x: -1, y: 0}})}
+            }
+
+        }
+
+
+
+
+*/
+/*
+
+        if(this.state.velocity.x !== 1){
+            if( Math.min(Math.min(up, down),left)===up){
+                if (this.die(0,1)===false)
+                {  this.setState({velocity: {x: 0, y: 1}});}else
+                if (this.die(-1,0)===false && Math.min(left, down)===left){
+                    this.setState({velocity: {x: -1, y: 0}});}else
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}});}
+
+            }
+            if(Math.min(Math.min(up, down),left)===left){
+
+                if (this.die(-1,0)===false){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                if (this.die(0,1)===false && Math.min(up, down)===up){
+                    this.setState({velocity: {x: 0, y: 1}})}else
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}})}
+            }
+            if(Math.min(Math.min(up, down),left)===down){
+
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}})}else
+                if (this.die(-1,0)===false && Math.min(up, left)===left){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                if (this.die(0,1)===false){
+                    this.setState({velocity: {x: 0, y: 1}})}
+            }
+
+        }
+*/
+
+
+
+/*
+
+        if(this.state.velocity.x !== -1){
+            if( Math.min(Math.min(right, down),up)===up){
+                if (this.die(0,1)===false)
+                {  this.setState({velocity: {x: 0, y: 1}});}else
+                if (this.die(1,0)===false && Math.min(right, down)===right){
+                    this.setState({velocity: {x: 1, y: 0}});}else
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}});}
+            }
+            if( Math.min(Math.min(right, down),up)===down){
+
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}})}else
+                if (this.die(1,0)===false && Math.min(right, up)===right){
+                    this.setState({velocity: {x: 1, y: 0}})}else
+                if (this.die(0,1)===false){
+                    this.setState({velocity: {x: 0, y: 1}})}
+            }
+
+            if( Math.min(Math.min(right, down),up)===right){
+
+                if (this.die(-1,0)===false){
+                    this.setState({velocity: {x: -1, y: 0}})}else
+                if (this.die(0,1)===false && Math.min(up, down)===up){
+                    this.setState({velocity: {x: 0, y: 1}})}else
+                if (this.die(0,-1)===false){
+                    this.setState({velocity: {x: 0, y: -1}})}
+            }
+        }
+
+
+*/
+
+
 
 //this.getDistance();
 //if (this.state.fruitPos.y<39&&this.state.fruitPos.y>0){
@@ -212,7 +506,7 @@ export default class Auto {
         y: this.state.playerPos.y + this.state.velocity.y,
     },
 });*/
-
+/*
         var up=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
         var right=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x+1,this.state.playerPos.y);
         var down=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y-1);
@@ -221,8 +515,8 @@ export default class Auto {
         if(Math.min( Math.min(Math.min(right, down),left),up)===up){
            if ((this.state.velocity.y !== -1)&&(this.die(0,1)===false))
            {  this.setState({velocity: {x: 0, y: 1}});}else
-               if (this.die(1,0)===false)
-                   this.setState({velocity: {x: 1, y: 0}});
+               if (this.die(1,0)===false){
+                   this.setState({velocity: {x: 1, y: 0}});}
         }
         if(Math.min( Math.min(Math.min(right, down),left),up)===right){
 
@@ -248,7 +542,7 @@ export default class Auto {
                  this.setState({velocity: {x: 0, y: 1}})}
         }
 
-
+*/
 /*
                 if(this.state.velocity.y !== -1){//-down
                     var min=Math.min(Math.min(right, down),left);
@@ -498,6 +792,6 @@ export default class Auto {
 
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 200);
+        }, 1000 / 50);
     }
 }
