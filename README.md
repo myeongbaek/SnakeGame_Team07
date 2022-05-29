@@ -17,8 +17,7 @@ https://myeongbaek.github.io/SnakeGame_Team07/
 Start the game and move your snake with arrow key.
 Your Snake will be longer when you eat up the apple. Get your best score and rank your record!!
 
-[![game image](https://user-images.githubusercontent.com/65847457/166137395-9fecbfc9-c1ec-42d7-815d-46b3bccfec8d.png)
-](https://github.com/myeongbaek/SnakeGame_Team07/issues/6#issue-1222061964)
+<img src="https://user-images.githubusercontent.com/65847457/170860252-24eb4f37-2a86-4cfd-a5c3-7b2728997e25.png" width="80%">
                                     
 ## Implementation Details
 
@@ -30,14 +29,14 @@ index.html  <br/>
 index.js <br/>
 style.css <br/><br/>
 
-<b>mode : <br/>
+<b>mode : </b><br/>
 dir : solver<br/>
   Auto.js <br/>
   Dual.js <br/>
   Single.js <br/>
   utils.js <br/>
   
- <b>solver : <br/>
+ <b>solver : </b><br/>
    search.js<br/>
    solver.js<br/>
 
