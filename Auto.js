@@ -148,9 +148,11 @@ export default class Auto {
 
         return false;
     }
+
+
     searchForFreePath(){
 
-        if (this.die(-1,0)){this.setState({velocity: {x: -1, y: 0}});}
+        if (this.die(-1,0)===false){this.setState({velocity: {x: -1, y: 0}});}
         if (this.die(1,0)===false) { this.setState({velocity: {x: 1, y: 0}})}
         if (this.die(0,1)===false) {this.setState({velocity: {x: 0, y: 1}});}
         if (this.die(0,-1)===false){this.setState({velocity: {x: 0, y: -1}});}
@@ -161,6 +163,83 @@ export default class Auto {
         var right=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x+1,this.state.playerPos.y);
         var down=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y-1);
         var left=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x-1,this.state.playerPos.y);
+
+        if (this.state.velocity.y === 1) {
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("right:" + right.toFixed(2), 110, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("down:" + down.toFixed(2), 210, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("left:" + left.toFixed(2), 330, 580);
+        }else
+
+        if (this.state.velocity.y === -1) {
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("up:" + up.toFixed(2), 110, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("right:" + right.toFixed(2), 210, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("left:" + left.toFixed(2), 330, 580);
+        }else
+
+        if (this.state.velocity.x === -1) {
+            var up2=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y -1);
+            var down2=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("up:" + up2.toFixed(2), 110, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("down:" + down2.toFixed(2), 210, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("left:" + left.toFixed(2), 330, 580);
+        }else
+
+        if (this.state.velocity.x === 1) {
+            var up2=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y -1);
+            var down2=this.getDistance(this.state.fruitPos.x,this.state.fruitPos.y,this.state.playerPos.x,this.state.playerPos.y +1);
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("up:" + up2.toFixed(2), 110, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("down:" + down2.toFixed(2), 210, 580);
+
+            this.$canvasContext.font = '15pt Calibri';
+            this.$canvasContext.lineWidth = 3;
+            this.$canvasContext.fillStyle = "grey";
+            this.$canvasContext.fillText("right:" + right.toFixed(2), 330, 580);
+        }
+
+
+
 
         if(Math.min( Math.min(Math.min(right, down),left),up)===up){
 
@@ -175,7 +254,6 @@ export default class Auto {
                         if ((this.state.velocity.x !== 1)&& Math.min(left, down)===left && this.die(-1,0)===false){
                             this.setState({velocity: {x: -1, y: 0}});
                         }else
-
                                   if ((this.state.velocity.y !== 1) && Math.min(left, down)===down && this.die(0,-1)===false){
                                     this.setState({velocity: {x: 0, y: -1}});}
 
@@ -410,6 +488,8 @@ export default class Auto {
         this.$canvasContext.fillText("Score:" + localStorage.getItem("score"), 10, 580);
 
 
+
+
         this.move();
         this.isKeyPressed = false;
 
@@ -427,6 +507,6 @@ export default class Auto {
 
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 200);
+        }, 1000 / 2);
     }
 }
