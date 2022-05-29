@@ -22,12 +22,12 @@ Your Snake will be longer when you eat up the apple. Get your best score and ran
 ## Implementation Details
 
 <b>Source code : </b><br>
-dr : mode <br/>
+dir : mode <br/>
 App.js <br/>
 MainScreen.js <br/>
 index.html  <br/>
 index.js <br/>
-style.css <br/><br/>
+style.css <br/>
 
 <b>mode : </b><br/>
 dir : solver<br/>
@@ -45,7 +45,7 @@ Our game is web console game running on index.html. From the index.html, the gam
 Inside of the index.js, App object is generated. And App.js is generating the MainScreen object. 
 So <b>index.html, index.js, style.css, and App.js</b> are the skeleton of our game.
 
-   And the others of the source code, from the <b>MainScreen.js</b> mode <b>Single.j Dual.js Auto.js</b> are functioning during the game. 
+And the others of the source code, from the <b>MainScreen.js</b> mode <b>Single.j Dual.js Auto.js</b> are functioning during the game. 
 MainScreen.js is defining MainScreen object and it show us mainscreen. Start, Dual Mode, Auto Play, Load, Rank, and Exit are implemented. Also their function is defined.
 Single.js is defining Single object which is containing game state, snake movement, key input, puase action, gameover, and save. The state is stored at localstorage to show us score, save, and rank. Moreover utils.js is supporting Single.js by defining functions to calculate.
 Similary Dual.js and Auto.js are defining each mode, state, game play, movement,,,
