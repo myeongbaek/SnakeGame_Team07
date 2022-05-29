@@ -1,5 +1,5 @@
 import { GenerateFruitPosition } from "./utils.js";
-import * as solver from "./solver.js";
+import * as solver from "./solver/solver.js";
 
 
 export default class Auto {
@@ -11,9 +11,6 @@ export default class Auto {
     isPaused = false;
     onGameState = false;
     renderMain;
-
-    trials = 30;
-    score_sum = 0;
 
     state = {
         playerPos: {
@@ -194,13 +191,23 @@ export default class Auto {
         if (this.isGameOver()) {
 
             this.onGameState = false;
-            this.trials--;
-            this.score_sum += this.state.score;
+
+            const overlay = document.createElement("div");
+            const modal = document.createElement("div");
+            overlay.classList = "overlay";
+            modal.classList = "modal";
+            modal.innerHTML = `
+                    <h1>You died</h1>
+                    <span class="score">Score : ${this.state.score}</span>                
+                    <span class="btn exit">Exit</span>
+                `;
+            overlay.appendChild(modal);
+            this.$target.appendChild(overlay);
 
 
-            if (this.trials > 0) {
-                console.log(this.trials);
-
+            const exit = this.$target.querySelector(".exit");
+            exit.addEventListener("click", () => {
+                this.isPaused = false;
                 this.setState({
                     playerPos: {
                         x: 20,
@@ -217,50 +224,12 @@ export default class Auto {
                     },
                     fruitPos: GenerateFruitPosition([], this.state.tileCount),
                 });
-
-
-            }
-            else {
-                console.log(this.score_sum / 30);
-
-                const overlay = document.createElement("div");
-                const modal = document.createElement("div");
-                overlay.classList = "overlay";
-                modal.classList = "modal";
-                modal.innerHTML = `
-                    <h1>You died</h1>
-                    <span class="score">Score : ${this.state.score}</span>                
-                    <span class="btn exit">Exit</span>
-                `;
-                overlay.appendChild(modal);
-                this.$target.appendChild(overlay);
-
-
-                const exit = this.$target.querySelector(".exit");
-                exit.addEventListener("click", () => {
-                    this.isPaused = false;
-                    this.setState({
-                        playerPos: {
-                            x: 20,
-                            y: 20,
-                        },
-                        score: 0,
-                        gridSize: 15,
-                        tileCount: 40,
-                        trail: [],
-                        tail: 5,
-                        velocity: {
-                            x: 0,
-                            y: -1,
-                        },
-                        fruitPos: GenerateFruitPosition([], this.state.tileCount),
-                    });
-                    clearInterval(this.intervalId);
-                    this.renderMain();
-                });
-
                 clearInterval(this.intervalId);
-            }
+                this.renderMain();
+            });
+
+            clearInterval(this.intervalId);
+
         }
         // snake head location 
         this.state.trail.push(this.state.playerPos);
@@ -312,17 +281,6 @@ export default class Auto {
             this.state.gridSize - 2,
             this.state.gridSize - 2
         );
-
-        //Head location
-        this.$canvasContext.fillStyle = "red";
-        this.$canvasContext.fillRect(
-            this.state.playerPos.x * this.state.gridSize,
-            this.state.playerPos.y * this.state.gridSize,
-            this.state.gridSize - 2,
-            this.state.gridSize - 2
-        );
-
-
     }
 
 
@@ -330,11 +288,8 @@ export default class Auto {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.render();
-        }, 1000 / 1000);
+        }, 1000 / 15);
 
-        // maximum speed
-        // this.intervalId = setInterval(() => {
-        //     this.render();
-        // }, 1000 / 200);
+
     }
 }

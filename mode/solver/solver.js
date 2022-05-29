@@ -18,7 +18,6 @@ export function greedyPath(state) {
 
     //step3 : if virtual snake exist, return the direction of the path from step1
     if (vpath !== null) {
-        console.log("step3");
         return path;
     }
     else {
@@ -26,7 +25,6 @@ export function greedyPath(state) {
         path = search.longestPath(sr, sc, obs[0].y, obs[0].x, obs.slice(1,), dr, dc, curr);
 
         if (path !== null) {
-            console.log("step4");
             return path;
         }
         else {
@@ -34,19 +32,16 @@ export function greedyPath(state) {
             path = search.farthestPath(sr, sc, dr, dc, obs, curr);
 
             if (path !== null) {
-                console.log("step5");
                 return path;
             }
             else {
                 path = search.isThereYou(sr, sc, dr, dc);
                 if (path !== null) return path;
-                console.log("step6");
                 return state.velocity;
             }
         }
     }
 }
-
 
 
 export function simplePath(state) {

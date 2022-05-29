@@ -1,6 +1,6 @@
-import Auto from "./Auto.js";
-import Dual from "./Dual.js";
-import Game from "./Game.js";
+import Auto from "./mode/Auto.js";
+import Dual from "./mode/Dual.js";
+import Single from "./mode/Single.js";
 
 export default class MainScreen {
   $target;
@@ -13,7 +13,7 @@ export default class MainScreen {
 
     this.$screen = document.createElement("div");
     this.$screen.classList = "box";
-    this.game = new Game({ $target, renderMain: this.render })
+    this.game = new Single({ $target, renderMain: this.render })
     this.dual = new Dual({ $target, renderMain: this.render })
     this.autoPlay = new Auto({ $target, renderMain: this.render });
 
