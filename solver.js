@@ -1,11 +1,12 @@
 import * as search from "./search.js";
 
-export function getDirection(state) {
+export function greedyPath(state) {
     var start = state.playerPos, sr = start.y, sc = start.x,
         end = state.fruitPos, dr = end.y, dc = end.x,
         obs = state.trail, curr = state.velocity;
 
     var path = null, vpath = null;
+
 
     //step1 : get the shortest path to fruit
     path = search.shortestPath(sr, sc, dr, dc, obs);
@@ -13,7 +14,7 @@ export function getDirection(state) {
 
     //step2 : get virtual snake from the step1 and get the longest path to tail
     if (path !== null)
-        vpath = search.longestPath(sr + path.y, sc + path.x, obs[0].y, obs[0].x, obs.slice(1,), curr);
+        vpath = search.longestPath(sr + path.y, sc + path.x, obs[0].y, obs[0].x, obs.slice(1,), dr, dc, curr);
 
     //step3 : if virtual snake exist, return the direction of the path from step1
     if (vpath !== null) {
@@ -22,7 +23,7 @@ export function getDirection(state) {
     }
     else {
         //step 4 : get the longest path to tail
-        path = search.longestPath(sr, sc, obs[0].y, obs[0].x, obs.slice(1,), curr);
+        path = search.longestPath(sr, sc, obs[0].y, obs[0].x, obs.slice(1,), dr, dc, curr);
 
         if (path !== null) {
             console.log("step4");
@@ -37,6 +38,9 @@ export function getDirection(state) {
                 return path;
             }
             else {
+                path = search.isThereYou(sr, sc, dr, dc);
+                if (path !== null) return path;
+                console.log("step6");
                 return state.velocity;
             }
         }
@@ -46,7 +50,7 @@ export function getDirection(state) {
 
 
 export function simplePath(state) {
-    var result = null;
+    var result = state.velocity;
     if (state.playerPos.x > state.fruitPos.x)
         state.velocity.x !== 1
             ? result = { x: -1, y: 0 }
@@ -63,6 +67,7 @@ export function simplePath(state) {
         state.velocity.y !== -1
             ? result = { x: 0, y: 1 }
             : null;
+
 
 
     return result;

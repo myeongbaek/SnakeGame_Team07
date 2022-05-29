@@ -49,7 +49,7 @@ export default class Game {
   }
 
   keyPress(event) {
-    if (this.isKeyPressed || this.isPaused) return;
+    if (this.isKeyPressed || this.isPaused || !this.onGameState) return;
     switch (event.key) {
       case "ArrowUp":
         this.state.velocity.y !== 1
@@ -297,7 +297,7 @@ export default class Game {
         clearInterval(this.intervalId);
         this.renderMain();
       });
-
+      this.isKeyPressed = false;
       clearInterval(this.intervalId);
     }
 

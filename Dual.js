@@ -80,17 +80,17 @@ export default class Dual {
     }
   }
   p1KeyPress(event) {
-    if (this.state.player1.isKeyPressed || this.isPaused) return;
+    if (this.state.player1.isKeyPressed || this.isPaused || !this.onGameState) return;
     switch (event.key) {
       case "w":
         event.preventDefault();
         this.state.player1.velocity.y !== 1
           ? this.setState({
-              player1: {
-                ...this.state.player1,
-                velocity: { x: 0, y: -1 },
-              },
-            })
+            player1: {
+              ...this.state.player1,
+              velocity: { x: 0, y: -1 },
+            },
+          })
           : null;
         this.state.player1.isKeyPressed = true;
         break;
@@ -98,8 +98,8 @@ export default class Dual {
         event.preventDefault();
         this.state.player1.velocity.y !== -1
           ? this.setState({
-              player1: { ...this.state.player1, velocity: { x: 0, y: 1 } },
-            })
+            player1: { ...this.state.player1, velocity: { x: 0, y: 1 } },
+          })
           : null;
         this.state.player1.isKeyPressed = true;
         break;
@@ -107,8 +107,8 @@ export default class Dual {
         event.preventDefault();
         this.state.player1.velocity.x !== 1
           ? this.setState({
-              player1: { ...this.state.player1, velocity: { x: -1, y: 0 } },
-            })
+            player1: { ...this.state.player1, velocity: { x: -1, y: 0 } },
+          })
           : null;
         this.state.player1.isKeyPressed = true;
         break;
@@ -116,25 +116,25 @@ export default class Dual {
         event.preventDefault();
         this.state.player1.velocity.x !== -1
           ? this.setState({
-              player1: { ...this.state.player1, velocity: { x: 1, y: 0 } },
-            })
+            player1: { ...this.state.player1, velocity: { x: 1, y: 0 } },
+          })
           : null;
         this.state.player1.isKeyPressed = true;
         break;
     }
   }
   p2KeyPress(event) {
-    if (this.state.player2.isKeyPressed || this.isPaused) return;
+    if (this.state.player2.isKeyPressed || this.isPaused || !this.onGameState) return;
     switch (event.key) {
       case "ArrowUp":
         event.preventDefault();
         this.state.player2.velocity.y !== 1
           ? this.setState({
-              player2: {
-                ...this.state.player2,
-                velocity: { x: 0, y: -1 },
-              },
-            })
+            player2: {
+              ...this.state.player2,
+              velocity: { x: 0, y: -1 },
+            },
+          })
           : null;
         this.state.player2.isKeyPressed = true;
         break;
@@ -142,8 +142,8 @@ export default class Dual {
         event.preventDefault();
         this.state.player2.velocity.y !== -1
           ? this.setState({
-              player2: { ...this.state.player2, velocity: { x: 0, y: 1 } },
-            })
+            player2: { ...this.state.player2, velocity: { x: 0, y: 1 } },
+          })
           : null;
         this.state.player2.isKeyPressed = true;
         break;
@@ -151,8 +151,8 @@ export default class Dual {
         event.preventDefault();
         this.state.player2.velocity.x !== 1
           ? this.setState({
-              player2: { ...this.state.player2, velocity: { x: -1, y: 0 } },
-            })
+            player2: { ...this.state.player2, velocity: { x: -1, y: 0 } },
+          })
           : null;
         this.state.player2.isKeyPressed = true;
         break;
@@ -160,8 +160,8 @@ export default class Dual {
         event.preventDefault();
         this.state.player2.velocity.x !== -1
           ? this.setState({
-              player2: { ...this.state.player2, velocity: { x: 1, y: 0 } },
-            })
+            player2: { ...this.state.player2, velocity: { x: 1, y: 0 } },
+          })
           : null;
         this.state.player2.isKeyPressed = true;
         break;

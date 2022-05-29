@@ -29,12 +29,16 @@ export function possiblePath(sr, sc, dr, dc, obs, curr) {
         if (rr < 0 || cc < 0) continue;
         if (rr >= 40 || cc >= 40) continue;
         if (board[rr][cc] === "O") continue;
-        console.log("possible path ");
 
         pos.push({ x: vc[i], y: vr[i] });
     }
 
-    if (pos.length !== 0) return pos[0];
+    if (pos.length !== 0) {
+        for (var i = 0; i < pos.length; i++) {
+            if (pos[i].x * curr.x + pos[i].y * curr.y === 0) return pos[i];
+        }
+        return pos[0];
+    }
     else return curr;
 }
 
@@ -57,7 +61,7 @@ export function farthestPath(sr, sc, dr, dc, obs, curr) {
         if (rr < 0 || cc < 0) continue;
         if (rr >= 40 || cc >= 40) continue;
         if (board[rr][cc] === "O") continue;
-        if (rr === dr && cc === dc) return { x: dc[i], y: dr[i] };
+        if (rr === dr && cc === dc) return null;
         pos.push({ x: cc, y: rr });
     }
 
@@ -130,11 +134,11 @@ export function shortestPath(sr, sc, dr, dc, obs) {
 }
 
 
-export function longestPath(sr, sc, dr, dc, obs, curr) {
+export function longestPath(sr, sc, dr, dc, obs, fr, fc, curr) {
 
     var board = twoDimensionArray(40, 40),
-        vr = [-1, 1, 0, 0],
-        vc = [0, 0, 1, -1],
+        vc = [-1, 1, 0, 0],
+        vr = [0, 0, 1, -1],
         pos = [], path, r, c;
 
 
@@ -154,41 +158,59 @@ export function longestPath(sr, sc, dr, dc, obs, curr) {
             if (rr < 0 || cc < 0) continue;
             if (rr >= 40 || cc >= 40) continue;
             if (board[rr][cc] === "O") continue;
-            if (rr === dr && cc === dc) continue;
+            if (rr === fr && cc === fc) return { x: vc[i], y: vr[i] };
 
 
-            pos.push({ x: vc[i], y: vr[i] });
+            pos.push({ x: vc[i], y: vr[i], r: rr, c: cc });
         }
-
+        var blockedNumber = 4, comparingNumber = 0, result = null;
         if (pos.length > 1) {
             for (var j = 0; j < pos.length; j++) {
-                if (pos[j].x * curr.x + pos[j].y + curr.y === 0) return pos[j];
+                if (pos[j].x * curr.x + pos[j].y + curr.y === 0) {
+                    comparingNumber = howManySurrounded(board, pos[j].r, pos[j].cc);
+                    if (blockedNumber > comparingNumber) {
+                        result = { x: pos[j].x, y: pos[j].y };
+                        blockedNumber = comparingNumber;
+                    }
+                }
             }
-            return pos[0];
+            if (result !== null) return result;
+            else return pos[0];
         }
         else {
-            if (sr + path.y === dr && sr + path.x === dc) return farthestPath(sr, sc, dr, dc, obs, curr);
+            if (sr + path.y === dr && sr + path.x === dc) return null;
             else return path;
         }
     }
     else return null;
 }
 
-function isSurrounded(board, r, c) {
+function howManySurrounded(board, r, c) {
     var vr = [-1, 1, 0, 0],
         vc = [0, 0, 1, -1],
-        rr, cc;
+        rr, cc, count = 0;
 
     for (var i = 0; i < 4; i++) {
         rr = r + vr[i];
         cc = c + vc[i];
 
-        if (rr < 0 || cc < 0) continue;
-        if (rr >= 40 || cc >= 40) continue;
-        if (board[rr][cc] !== 'O') return false;
+        if (rr < 0 || cc < 0) { count++; continue; }
+        if (rr >= 40 || cc >= 40) { count++; continue; }
+        if (board[rr][cc] === 'O') { count++; continue; }
     }
-    return true;
+    return count;
 }
 
+export function isThereYou(sr, sc, dr, dc) {
+    var vr = [-1, 1, 0, 0],
+        vc = [0, 0, 1, -1],
+        rr, cc, result = null;
 
+    for (var i = 0; i < 4; i++) {
+        rr = sr + vr[i];
+        cc = sc + vc[i];
 
+        if (rr === dr && cc === dc) result = { x: vc[i], y: vr[i] };
+    }
+    return result;
+}
