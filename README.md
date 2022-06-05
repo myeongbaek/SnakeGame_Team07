@@ -10,6 +10,8 @@ You can [play the game](https://myeongbaek.github.io/SnakeGame_Team07/) from thi
 
 https://myeongbaek.github.io/SnakeGame_Team07/
 
+Or if you using the VSCODE just simply play with 'Live Servr' Extension
+
 
 ## How to play
 
