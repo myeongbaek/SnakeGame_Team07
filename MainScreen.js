@@ -28,7 +28,7 @@ export default class MainScreen {
         <span class="auto btn">Auto Play</span>
         <span class="load btn">Load</span>
         <span class="rank btn">Ranking</span>
-        <span class="btn">Exit</span>
+        <span class="btn" onclick="window.open('', '_self', ''); window.close();">Exit</span>
     `;
     this.$target.innerHTML = ``;
     this.$target.appendChild(this.$screen);
