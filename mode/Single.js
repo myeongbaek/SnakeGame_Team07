@@ -211,6 +211,10 @@ export default class Single {
     });
   }
 
+  isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+  }
+
   render() {
     this.move();
     this.isKeyPressed = false;
@@ -241,10 +245,22 @@ export default class Single {
 
       const isBntOnClick = (event) => {
         event.preventDefault();
-        const rankData = { username: username.value, score: this.state.score };
+        let rankData = { username: username.value, score: this.state.score };
         let savedData = JSON.parse(localStorage.getItem("rankData"));
+        let saveNumber = localStorage.getItem("numberPlayer");
         savedData === null ? (savedData = []) : savedData;
-
+        if (this.isBlank(username.value)) {
+          let tmp = parseInt(saveNumber);
+          if (saveNumber == null) {
+            tmp = 1
+          } else {
+            tmp += 1
+          }
+          console.log(tmp)
+          const player_default = "Player " + tmp.toString();
+          rankData = { username: player_default, score: this.state.score };
+          localStorage.setItem("numberPlayer", tmp.toString());
+        }
         savedData.push(rankData);
         savedData.sort(CompareRank);
         if (savedData.length > 10) {
