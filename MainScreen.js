@@ -94,7 +94,7 @@ export default class MainScreen {
               <div class="rank-data">
               <span class="rank-data__index">${index + 1}.</span>
               <span class="rank-data__name">${rank.username}</span>
-              <span class="rank-data__score">${rank.score}점</span>
+              <span class="rank-data__score">${rank.score} point{rank.score > 1 ? 's' : ''}</span>
               </div>
               `;
             })
